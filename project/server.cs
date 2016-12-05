@@ -36,7 +36,7 @@ namespace project
         {
             InitializeComponent();
             thread = new Thread(listen);
-            connection = new SqlConnection(@"Data Source=OMER-PC\sqlexpress;Initial Catalog=Trofot;Integrated Security=True;Pooling=False");
+            connection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Admin\Documents\GitHub\medSchd_v2\DB\TROFOT.mdf;Integrated Security=True;Connect Timeout=30");
         }
 
         private void server_Load(object sender, EventArgs e)
