@@ -19,6 +19,7 @@ namespace prozect_client
         public client()
         {
             InitializeComponent();
+            MessageBox.Show("sdfsdf");
             
         }              
         private void ConnectServer_SendData_Click(object sender, EventArgs e)//שליחת מידע לשרת ומשם לבסיס נתונים
