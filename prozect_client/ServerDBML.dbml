@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="Trofot" Class="ServerDBMLDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=OMER-PC\sqlexpress;Initial Catalog=Trofot;Integrated Security=True;Pooling=False" SettingsObjectName="prozect_client.Properties.Settings" SettingsPropertyName="TrofotConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Client" Member="Clients">
+    <Type Name="Client">
+      <Column Name="IdNumber" Type="System.String" DbType="NChar(9) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="FirstName" Type="System.String" DbType="NChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="Lastname" Type="System.String" DbType="NChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="PhoneNumber" Type="System.String" DbType="NChar(10) NOT NULL" CanBeNull="false" />
+      <Association Name="Client_Prescription" Member="Prescriptions" ThisKey="IdNumber" OtherKey="IdClient" Type="Prescription" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Medicines" Member="Medicines">
+    <Type Name="Medicine">
+      <Column Name="GenericName" Type="System.String" DbType="NChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="BrandName" Type="System.String" DbType="NChar(20) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="MedType" Type="System.String" DbType="NChar(10) NOT NULL" CanBeNull="false" />
+      <Column Name="TakeOption" Type="System.String" DbType="NChar(20) NOT NULL" CanBeNull="false" />
+      <Association Name="Medicine_Prescription" Member="Prescriptions" ThisKey="BrandName" OtherKey="IdMed" Type="Prescription" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Pharmacist" Member="Pharmacists">
+    <Type Name="Pharmacist">
+      <Column Name="IdNumber" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="FirstName" Type="System.String" DbType="NChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="LastName" Type="System.String" DbType="NChar(20) NOT NULL" CanBeNull="false" />
+      <Association Name="Pharmacist_Prescription" Member="Prescriptions" ThisKey="IdNumber" OtherKey="IdPharmacist" Type="Prescription" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Prescription" Member="Prescriptions">
+    <Type Name="Prescription">
+      <Column Name="IdMed" Type="System.String" DbType="NChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="IdClient" Type="System.String" DbType="NChar(9) NOT NULL" CanBeNull="false" />
+      <Column Name="StartTaking" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="EndOfTaking" Member="NumOfDays" Storage="_EndOfTaking" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
+      <Column Name="AmountMorning" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="amountNoon" Member="AmountNoon" Storage="_amountNoon" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="amountNight" Member="AmountNight" Storage="_amountNight" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IdPharmacist" Type="System.Int32" DbType="int" CanBeNull="false" />
+      <Column Name="id" Member="Id" Storage="_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Association Name="Client_Prescription" Member="Client" ThisKey="IdClient" OtherKey="IdNumber" Type="Client" IsForeignKey="true" />
+      <Association Name="Pharmacist_Prescription" Member="Pharmacist" ThisKey="IdPharmacist" OtherKey="IdNumber" Type="Pharmacist" IsForeignKey="true" />
+      <Association Name="Medicine_Prescription" Member="Medicine" ThisKey="IdMed" OtherKey="BrandName" Type="Medicine" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>

@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="ServerDBML">
+  <DataContextMoniker Name="/ServerDBMLDataContext" />
+  <nestedChildShapes>
+    <classShape Id="2c0dadd4-7393-4fc4-b413-a81fbdb64b34" absoluteBounds="3.5, 1.375, 2, 1.5785953776041666">
+      <DataClassMoniker Name="/ServerDBMLDataContext/Client" />
+      <nestedChildShapes>
+        <elementListCompartment Id="cd2754fb-e1cb-4ca6-a5a4-cf0320681dca" absoluteBounds="3.515, 1.835, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="a74c4827-f87c-4608-9c53-41486b33f02c" absoluteBounds="6.875, 3.25, 2, 1.5785953776041666">
+      <DataClassMoniker Name="/ServerDBMLDataContext/Medicine" />
+      <nestedChildShapes>
+        <elementListCompartment Id="4bb4bb2f-65e9-4895-a5c7-db09684c2ea2" absoluteBounds="6.8900000000000006, 3.71, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="486ea4c3-c53a-4144-bad9-6b2d6f763170" absoluteBounds="0.75, 3.75, 2, 1.3862939453125005">
+      <DataClassMoniker Name="/ServerDBMLDataContext/Pharmacist" />
+      <nestedChildShapes>
+        <elementListCompartment Id="e37f1a5d-de9b-4bc2-9f0e-dae371763c33" absoluteBounds="0.765, 4.21, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="ede32501-964c-4e8f-bbfb-08af1afee911" absoluteBounds="3.5, 3.25, 2, 2.5401025390625005">
+      <DataClassMoniker Name="/ServerDBMLDataContext/Prescription" />
+      <nestedChildShapes>
+        <elementListCompartment Id="e2488731-b6f4-482c-b2be-fac022a3d0c2" absoluteBounds="3.5150000000000006, 3.71, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(4.5 : 2.95359537760417); (4.5 : 3.25)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/ServerDBMLDataContext/Client/Client_Prescription" />
+      <nodes>
+        <classShapeMoniker Id="2c0dadd4-7393-4fc4-b413-a81fbdb64b34" />
+        <classShapeMoniker Id="ede32501-964c-4e8f-bbfb-08af1afee911" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.75 : 4.44314697265625); (3.5 : 4.44314697265625)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/ServerDBMLDataContext/Pharmacist/Pharmacist_Prescription" />
+      <nodes>
+        <classShapeMoniker Id="486ea4c3-c53a-4144-bad9-6b2d6f763170" />
+        <classShapeMoniker Id="ede32501-964c-4e8f-bbfb-08af1afee911" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(6.875 : 4.03929768880208); (5.5 : 4.03929768880208)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/ServerDBMLDataContext/Medicine/Medicine_Prescription" />
+      <nodes>
+        <classShapeMoniker Id="a74c4827-f87c-4608-9c53-41486b33f02c" />
+        <classShapeMoniker Id="ede32501-964c-4e8f-bbfb-08af1afee911" />
+      </nodes>
+    </associationConnector>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>
