@@ -33,17 +33,17 @@
         <classShapeMoniker Id="ede32501-964c-4e8f-bbfb-08af1afee911" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 4.44314697265625); (3.5 : 4.44314697265625)]" fixedFrom="NotFixed" fixedTo="NotFixed">
-      <AssociationMoniker Name="/ServerDBMLDataContext/Pharmacist/Pharmacist_Prescription" />
-      <nodes>
-        <classShapeMoniker Id="486ea4c3-c53a-4144-bad9-6b2d6f763170" />
-        <classShapeMoniker Id="ede32501-964c-4e8f-bbfb-08af1afee911" />
-      </nodes>
-    </associationConnector>
     <associationConnector edgePoints="[(6.875 : 4.03929768880208); (5.5 : 4.03929768880208)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/ServerDBMLDataContext/Medicine/Medicine_Prescription" />
       <nodes>
         <classShapeMoniker Id="a74c4827-f87c-4608-9c53-41486b33f02c" />
+        <classShapeMoniker Id="ede32501-964c-4e8f-bbfb-08af1afee911" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.75 : 4.44314697265625); (3.5 : 4.44314697265625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/ServerDBMLDataContext/Pharmacist/Pharmacist_Prescription" />
+      <nodes>
+        <classShapeMoniker Id="486ea4c3-c53a-4144-bad9-6b2d6f763170" />
         <classShapeMoniker Id="ede32501-964c-4e8f-bbfb-08af1afee911" />
       </nodes>
     </associationConnector>

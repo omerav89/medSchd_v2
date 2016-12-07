@@ -18,9 +18,7 @@ namespace prozect_client
         private bool ok = true;
         public client()
         {
-            InitializeComponent();
-            MessageBox.Show("sdfsdf");
-            
+            InitializeComponent();            
         }              
         private void ConnectServer_SendData_Click(object sender, EventArgs e)//שליחת מידע לשרת ומשם לבסיס נתונים
         {
@@ -62,8 +60,12 @@ namespace prozect_client
         private void client_Load(object sender, EventArgs e)//הסדרת הפנאלים בעליית הפורם ופתיחת תהליכון של מילוי תרופות
         {
             this.setVisiblePanels();
-            Thread comboUpdate = new Thread(new ThreadStart(updateMedCombo));
-            comboUpdate.Start();
+            try
+            {
+                Thread comboUpdate = new Thread(new ThreadStart(updateMedCombo));
+                comboUpdate.Start();
+            }
+            catch (Exception ex) { MessageBox.Show("יש בעיה בשרת אנא פנה לשירות טכני"); }
         }
 
         private void updateMedCombo()

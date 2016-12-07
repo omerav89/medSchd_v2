@@ -217,25 +217,7 @@ namespace prozect_client
 
 
 
-        //public static void BringMed(this client cs)
-        //{
-        //    connectToServer("127.0.0.1", 8001);
-        //    while (cnt < 2)
-        //    {
-        //        if (cnt == 0)
-        //        {
-        //            writer.Write("Med");
-        //            cnt++;
-        //        }
-        //        else
-        //        {
-        //            string json = reader.ReadString();
-        //            ClsMed me= JsonConvert.DeserializeObject<ClsMed>(json);
-        //            cs.comboMed.DataSource = me;
-
-        //        }
-        //    }
-        //}
+       
 
 
     }

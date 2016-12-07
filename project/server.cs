@@ -30,7 +30,7 @@ namespace project
         SqlDataReader reader;
         private bool ok_c = false;
 
-        
+
 
         public server()
         {
@@ -41,6 +41,11 @@ namespace project
 
         private void server_Load(object sender, EventArgs e)
         {
+            keepListening = true;
+            thread.Start();
+            startListen.Visible = false;
+            cancelListen.Visible = true;
+            Llisten.Visible = true;
             AddMedicine.Visible = false;
             AddPharmacist.Visible = false;
             cancel.Visible = false;
@@ -109,7 +114,7 @@ namespace project
             {
 
                 str = reader.ReadString();
-                
+
                 if (str == "EXIT")
                 {
                     client.Close();
@@ -209,7 +214,7 @@ namespace project
 
                     string med_str = "";
 
-                    foreach(var med in medList)
+                    foreach (var med in medList)
                     {
                         med_str += med.BrnadName.Trim() + ",";
                     }
@@ -221,11 +226,7 @@ namespace project
         }
         private void startListen_Click(object sender, EventArgs e)//התחלת האזנה ברגע לחציה על כפתור
         {
-            keepListening = true;
-            thread.Start();
-            startListen.Visible = false;
-            cancelListen.Visible = true;
-            Llisten.Visible = true;
+            
 
         }
 
@@ -239,16 +240,16 @@ namespace project
 
         private void setUpDataAdapter()//הגדרת מגשר בין בסיס נתונים ומחלקת מידע מנותקת
         {
-         
-                dataAdapter_Prescription = new SqlDataAdapter("select IdMed, IdClient, StartTaking, NumOfDays, AmountMorning, AmountNoon, AmountNight, IdPharmacist From Prescription", connection);
-                SqlCommandBuilder builder_Prescription = new SqlCommandBuilder(dataAdapter_Prescription);
 
-               
-                dataAdapter_Prescription.Fill(dataSet, "Prescription");
-            
-                InsertToDataBase();
-            
-           
+            dataAdapter_Prescription = new SqlDataAdapter("select IdMed, IdClient, StartTaking, NumOfDays, AmountMorning, AmountNoon, AmountNight, IdPharmacist From Prescription", connection);
+            SqlCommandBuilder builder_Prescription = new SqlCommandBuilder(dataAdapter_Prescription);
+
+
+            dataAdapter_Prescription.Fill(dataSet, "Prescription");
+
+            InsertToDataBase();
+
+
         }
 
         private void initConnection()
@@ -268,82 +269,103 @@ namespace project
 
         public void updateDataSet(DataSet ds, string tableName)//עדכון אובייקט המחזיק מידע לשליחה לבסיס נתונים
         {
-         
-                try
-                {
-                    connection.Open();
-                    dataAdapter_Prescription.Update(ds, tableName);
-                    connection.Close();
-                    MessageBox.Show("המרשם צורף");
 
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
-                }
-         }
-                
-        public void InsertToDataBase()//הכנסת מידע לבסיס נתונים לאחר בדיקת תקינות
-        {
-        
-                try
-                {
-                    DataRow dr_Prescription = dataSet.Tables["Prescription"].NewRow();
-                    dr_Prescription["IdMed"] = medSchd.MedId;
-                    dr_Prescription["IdClient"] = medSchd.ClientId;
-                    dr_Prescription["StartTaking"] = medSchd.StartTime.ToShortDateString();
-                    dr_Prescription["NumOfDays"] = medSchd.DaysLong;
-                    dr_Prescription["AmountMorning"] = medSchd.AmountMorning;
-                    dr_Prescription["AmountNoon"] = medSchd.AmountNoon;
-                    dr_Prescription["AmountNight"] = medSchd.AmountNight;
-                    dr_Prescription["IdPharmacist"] = medSchd.PharmacistId;
-                    dataSet.Tables["Prescription"].Rows.Add(dr_Prescription);
-                    dataAdapter_Prescription.Update(dataSet, "Prescription");
-                    MessageBox.Show("המרשם צורף");
-
-                    //updateDataSet(dataSet, "Prescription",temp);
-
-                }
-                catch (SqlException ex)
-                {
-                    MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
-
-                }
+            try
+            {
+                connection.Open();
+                dataAdapter_Prescription.Update(ds, tableName);
+                connection.Close();
+                MessageBox.Show("המרשם צורף");
 
             }
-    
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
+            }
+        }
 
-        
-
-
-        public void AddPharmacist_Click_1(object sender, EventArgs e)//הוספת רוקח לבסיס נתונים
+        public void InsertToDataBase()//הכנסת מידע לבסיס נתונים לאחר בדיקת תקינות
         {
 
             try
             {
+                DataRow dr_Prescription = dataSet.Tables["Prescription"].NewRow();
+                dr_Prescription["IdMed"] = medSchd.MedId;
+                dr_Prescription["IdClient"] = medSchd.ClientId;
+                dr_Prescription["StartTaking"] = medSchd.StartTime.ToShortDateString();
+                dr_Prescription["NumOfDays"] = medSchd.DaysLong;
+                dr_Prescription["AmountMorning"] = medSchd.AmountMorning;
+                dr_Prescription["AmountNoon"] = medSchd.AmountNoon;
+                dr_Prescription["AmountNight"] = medSchd.AmountNight;
+                dr_Prescription["IdPharmacist"] = medSchd.PharmacistId;
+                dataSet.Tables["Prescription"].Rows.Add(dr_Prescription);
+                dataAdapter_Prescription.Update(dataSet, "Prescription");
+                MessageBox.Show("המרשם צורף");
 
-                DataSet ds_pharmacist = new DataSet();
-                SqlDataAdapter da_pharmacist = new SqlDataAdapter("SELECT FirstName,LastName FROM Pharmacist ", connection);
-                SqlCommandBuilder cmd_B = new SqlCommandBuilder(da_pharmacist);
-                da_pharmacist.Fill(ds_pharmacist, "Pharmacist");
-                DataRow dr_pharmacist = ds_pharmacist.Tables["Pharmacist"].NewRow();
-                dr_pharmacist["FirstName"] = Pharmacist_FName.Text;
-                dr_pharmacist["LastName"] = Pharmacist_LName.Text;               
-                ds_pharmacist.Tables["Pharmacist"].Rows.Add(dr_pharmacist);
-                da_pharmacist.Update(ds_pharmacist, "Pharmacist");
-                MessageBox.Show("הרוקח " + Pharmacist_FName.Text + " " + Pharmacist_LName.Text + " נוסף בהצלחה");
-                Pharmacist_FName.Text = "";
-                Pharmacist_LName.Text = "";
-                panel_Pharmacist.Visible = false;
-                Add_Medicine_or_Pharmacist.Visible = true;
-                cancel.Visible = false;
-                OpenPharmacist.Visible = false;
+                //updateDataSet(dataSet, "Prescription",temp);
+
             }
             catch (SqlException ex)
             {
-                MessageBox.Show("הייתה בעיה בהוספת " + Pharmacist_FName.Text + " " + Pharmacist_LName.Text + " אנא נסה שנית");
+                MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
 
             }
+
+        }
+
+
+
+
+
+        public void AddPharmacist_Click_1(object sender, EventArgs e)//הוספת רוקח לבסיס נתונים
+        {
+            if (Pharmacist_IdNumber.TextLength < 6)
+            {
+                MessageBox.Show("עלייך לבדוק את המידע שהכנסת ולנסות שנית");
+            }
+            else
+            {
+                try
+                {
+                    bool found = false;
+                    DataSet ds_pharmacist = new DataSet();
+                    SqlDataAdapter da_pharmacist = new SqlDataAdapter("SELECT * FROM Pharmacist ", connection);
+                    SqlCommandBuilder cmd_B = new SqlCommandBuilder(da_pharmacist);
+                    da_pharmacist.Fill(ds_pharmacist, "Pharmacist");
+                    DataRow[] arr_P = ds_pharmacist.Tables["Pharmacist"].Select("IdNumber =" + Pharmacist_IdNumber.Text);
+                    foreach (DataRow dr in arr_P)
+                    {
+                        found = true;
+                    }
+                    if (!found)
+                    {
+                        DataRow dr_pharmacist = ds_pharmacist.Tables["Pharmacist"].NewRow();
+                        dr_pharmacist["IdNumber"] = Pharmacist_IdNumber.Text;
+                        dr_pharmacist["FirstName"] = Pharmacist_FName.Text;
+                        dr_pharmacist["LastName"] = Pharmacist_LName.Text;
+                        ds_pharmacist.Tables["Pharmacist"].Rows.Add(dr_pharmacist);
+                        da_pharmacist.Update(ds_pharmacist, "Pharmacist");
+                        MessageBox.Show("הרוקח " + Pharmacist_FName.Text + " " + Pharmacist_LName.Text + " נוסף בהצלחה");
+                        Pharmacist_FName.Text = "";
+                        Pharmacist_LName.Text = "";
+                        Pharmacist_IdNumber.Text = "";
+                        panel_Pharmacist.Visible = false;
+                        Add_Medicine_or_Pharmacist.Visible = true;
+                        cancel.Visible = false;
+                        OpenPharmacist.Visible = false;
+                    }
+                    else
+                    {
+                        MessageBox.Show("מספר הזהות כבר קיים אנא הכנס מספר אחר");
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    MessageBox.Show("הייתה בעיה בהוספת " + Pharmacist_FName.Text + " " + Pharmacist_LName.Text + " אנא נסה שנית");
+
+                }
+            }
+
         }
         public void AddMedicine_Click(object sender, EventArgs e)//הוספת תרופה לבסיס נתונים
         {
@@ -378,56 +400,63 @@ namespace project
         }
         private void Add_c_btn_Click(object sender, EventArgs e)//הוספת לקוח
         {
-            bool found = false;
-            string str_id = "";
-
-            DataSet ds_client = new DataSet();
-            SqlDataAdapter da_client = new SqlDataAdapter("SELECT * FROM Client", connection);
-            SqlCommandBuilder cmd_client = new SqlCommandBuilder(da_client);
-            da_client.Fill(ds_client, "Client");
-            DataRow[] arr_c = ds_client.Tables["Client"].Select("IdNumber =" + C_Id_txt.Text);
-
-            foreach (DataRow dr in arr_c)
+            if (C_Id_txt.TextLength < 9 || C_PN_txt.TextLength < 10)
             {
-                found = true;
-                str_id += dr["IdNumber"].ToString();
-
+                MessageBox.Show("בדוק היטב את המידע שהכנסת ונסה שנית");
             }
-            if (!found)
+            else
             {
-                try
+                bool found = false;
+                string str_id = "";
+
+                DataSet ds_client = new DataSet();
+                SqlDataAdapter da_client = new SqlDataAdapter("SELECT * FROM Client", connection);
+                SqlCommandBuilder cmd_client = new SqlCommandBuilder(da_client);
+                da_client.Fill(ds_client, "Client");
+                DataRow[] arr_c = ds_client.Tables["Client"].Select("IdNumber =" + C_Id_txt.Text);
+
+                foreach (DataRow dr in arr_c)
                 {
-                    DataRow dr_medicine = ds_client.Tables["Client"].NewRow();
-                    dr_medicine["IdNumber"] = C_Id_txt.Text;
-                    dr_medicine["FirstName"] = C_FN_txt.Text;
-                    dr_medicine["LastName"] = C_LN_txt.Text;
-                    dr_medicine["PhoneNumber"] = C_PN_txt.Text;
-                    ds_client.Tables["Client"].Rows.Add(dr_medicine);
-                    da_client.Update(ds_client, "Client");
-                    MessageBox.Show("הלקוח " + C_FN_txt.Text + "\n " + C_LN_txt.Text + " נוספה בהצלחה");
-                    C_Id_txt.Text = "";
-                    C_FN_txt.Text = "";
-                    C_LN_txt.Text = "";
-                    C_PN_txt.Text = "";
-                    panel_Client.Visible = false;
-                    Add_Medicine_or_Pharmacist.Visible = true;
-                    cancel.Visible = false;
-                    OpenClient.Visible = false;
+                    found = true;
+                    str_id += dr["IdNumber"].ToString();
 
                 }
-                catch (SqlException ex)
+                if (!found)
                 {
-                    MessageBox.Show("הייתה בעיה בהוספת " + C_FN_txt.Text + "\n " + C_LN_txt.Text + " אנא נסה שנית");
+                    try
+                    {
+                        DataRow dr_medicine = ds_client.Tables["Client"].NewRow();
+                        dr_medicine["IdNumber"] = C_Id_txt.Text;
+                        dr_medicine["FirstName"] = C_FN_txt.Text;
+                        dr_medicine["LastName"] = C_LN_txt.Text;
+                        dr_medicine["PhoneNumber"] = C_PN_txt.Text;
+                        ds_client.Tables["Client"].Rows.Add(dr_medicine);
+                        da_client.Update(ds_client, "Client");
+                        MessageBox.Show("הלקוח " + C_FN_txt.Text + "\n " + C_LN_txt.Text + " נוספה בהצלחה");
+                        C_Id_txt.Text = "";
+                        C_FN_txt.Text = "";
+                        C_LN_txt.Text = "";
+                        C_PN_txt.Text = "";
+                        panel_Client.Visible = false;
+                        Add_Medicine_or_Pharmacist.Visible = true;
+                        cancel.Visible = false;
+                        OpenClient.Visible = false;
 
+                    }
+                    catch (SqlException ex)
+                    {
+                        MessageBox.Show("הייתה בעיה בהוספת " + C_FN_txt.Text + "\n " + C_LN_txt.Text + " אנא נסה שנית");
+
+                    }
                 }
-            }
-        
+
                 else
-            {
-                MessageBox.Show(C_Id_txt.Text +"\n"+ " כבר נמצא במערכת");
-                C_Id_txt.Text = "";
+                {
+                    MessageBox.Show(C_Id_txt.Text + "\n" + " כבר נמצא במערכת");
+                    C_Id_txt.Text = "";
+                }
             }
-    
+
 
         }
 
@@ -476,6 +505,17 @@ namespace project
             panel_Client.Visible = false;
             Add_Medicine_or_Pharmacist.Visible = true;
             cancel.Visible = false;
+            Pharmacist_FName.Text = "";
+            Pharmacist_LName.Text = "";
+            Pharmacist_IdNumber.Text = "";
+            GenericName_Text.Text = "";
+            BrandName_Text.Text = "";
+            MedType_Text.Text = "";
+            TakeOption_Text.Text = "";
+            C_Id_txt.Text = "";
+            C_FN_txt.Text = "";
+            C_LN_txt.Text = "";
+            C_PN_txt.Text = "";
         }
 
 
@@ -509,6 +549,10 @@ namespace project
             delete_client.Visible = true;
             panel_delete_client.Visible = false;
             delete_client.Visible = false;
+            Medicine_brand_text.Text = "";
+            Id_pharmacist_text.Text = "";
+            client_delete_text.Text = "";
+
         }
 
         private void Delete_Medicine_Click(object sender, EventArgs e)//נראות לאחר לחיצה על מחיקת תרופה
@@ -578,7 +622,7 @@ namespace project
         {
             try
             {
-                string str_med=Medicine_brand_text.Text;
+                string str_med = Medicine_brand_text.Text;
                 DataSet ds_medicine_delete = new DataSet();
                 SqlDataAdapter da_medicine_delete = new SqlDataAdapter("SELECT BrandName FROM Medicine", connection);
                 da_medicine_delete.Fill(ds_medicine_delete, "Medicine");
@@ -695,31 +739,42 @@ namespace project
             Update_p_id_txt.Text = "";
             c_update_txt.Text = "";
             p_update_txt.Text = "";
+            radioBtn_p_FN.Checked = false;
+            radioBtn_p_LN.Checked = false;
+            radioBtn_c_FN.Checked = false;
+            radioBtn_c_LN.Checked = false;
+            radioBtn_c_PN.Checked = false;
         }
 
         private void Update_now_p_btn_Click(object sender, EventArgs e)//עדכון פרטי רוקח
         {
-            string str_id = "",str_name=p_update_txt.Text;
-            bool found = false;
-            DataSet ds_pharmacist_update = new DataSet();
-            SqlDataAdapter da_pharmacist_update = new SqlDataAdapter("SELECT * FROM Pharmacist", connection);
-            da_pharmacist_update.Fill(ds_pharmacist_update, "Pharmacist");
-            DataRow[] arr_P = ds_pharmacist_update.Tables["Pharmacist"].Select("IdNumber =" + Update_p_id_txt.Text);
-
-            foreach (DataRow dr in arr_P)
+            if (Update_p_id_txt.TextLength < 6)
             {
-                found = true;
-                str_id += dr["IdNumber"].ToString();
-                
-            }
-            if (!found)
-            {
-                MessageBox.Show("מספר הרוקח אינו קיים במערכת");
-                Update_p_id_txt.Text = "";
+                MessageBox.Show("יש להכניס מספר זיהוי בעל 6 ספרות");
             }
             else
             {
-                
+                string str_id = "", str_name = p_update_txt.Text;
+                bool found = false;
+                DataSet ds_pharmacist_update = new DataSet();
+                SqlDataAdapter da_pharmacist_update = new SqlDataAdapter("SELECT * FROM Pharmacist", connection);
+                da_pharmacist_update.Fill(ds_pharmacist_update, "Pharmacist");
+                DataRow[] arr_P = ds_pharmacist_update.Tables["Pharmacist"].Select("IdNumber =" + Update_p_id_txt.Text);
+
+                foreach (DataRow dr in arr_P)
+                {
+                    found = true;
+                    str_id += dr["IdNumber"].ToString();
+
+                }
+                if (!found)
+                {
+                    MessageBox.Show("מספר הרוקח אינו קיים במערכת");
+                    Update_p_id_txt.Text = "";
+                }
+                else
+                {
+
                     if (radioBtn_p_FN.Checked)
                     {
                         string str_sql = "Update Pharmacist set FirstName = @fir where IdNumber = @id";
@@ -736,12 +791,12 @@ namespace project
                         panel_update_p.Visible = false;
                         Update_p_btn.Visible = false;
                         Cancel_update_btn.Visible = false;
-                 
-                }
+
+                    }
 
                     else
-                    { 
-                        string str_sql= "Update Pharmacist set LastName = @las where IdNumber = @id";
+                    {
+                        string str_sql = "Update Pharmacist set LastName = @las where IdNumber = @id";
                         connection.Open();
                         da_pharmacist_update.UpdateCommand = connection.CreateCommand();
                         da_pharmacist_update.UpdateCommand.CommandText = str_sql;
@@ -756,14 +811,15 @@ namespace project
                         Update_p_btn.Visible = false;
                         Cancel_update_btn.Visible = false;
                     }
-              
+
+                }
             }
 
         }
 
         private void Update_now_c_btn_Click(object sender, EventArgs e)//עדכון פרטי לקוח
         {
-             string str_id = "",str_update=c_update_txt.Text;
+            string str_id = "", str_update = c_update_txt.Text;
             bool found = false;
             DataSet ds_client_update = new DataSet();
             SqlDataAdapter da_client_update = new SqlDataAdapter("SELECT * FROM client", connection);
@@ -774,7 +830,7 @@ namespace project
             {
                 found = true;
                 str_id += dr["IdNumber"].ToString();
-                
+
             }
             if (!found)
             {
@@ -817,7 +873,7 @@ namespace project
                     Update_c_btn.Visible = false;
                     Cancel_update_btn.Visible = false;
                 }
-                else if(radioBtn_c_LN.Checked)
+                else if (radioBtn_c_LN.Checked)
                 {
                     string str_sql = "Update Client set LastName = @las where IdNumber = @id";
                     connection.Open();
@@ -907,13 +963,58 @@ namespace project
                 ok_c = true;
         }
 
-        private void server_FormClosing(object sender, FormClosingEventArgs e)
+        private void server_FormClosing(object sender, FormClosingEventArgs e)//כיבוי שרת
         {
             Environment.Exit(Environment.ExitCode);
         }
-    }
 
+        private void Pharmacist_IdNumber_TextChanged(object sender, EventArgs e)//תקינות אורך מספר זיהוי
+        {
+            if (Pharmacist_IdNumber.TextLength < 6)
+            {
+                errorProvider_P_Id.SetError(L_P_id, "6 ספרות בלבד");
+                ok_c = false;
+            }
+            else
+            {
+                errorProvider_P_Id.SetError(L_P_id, "");
+                ok_c = true;
+            }
+        }
+
+        private void Update_p_id_txt_TextChanged(object sender, EventArgs e)
+        {
+            if (Pharmacist_IdNumber.TextLength < 6)
+            {
+                errorProvider_P_Id.SetError(Update_p_id_txt, "6 ספרות בלבד");
+                ok_c = false;
+            }
+            else
+            {
+                errorProvider_P_Id.SetError(Update_p_id_txt, "");
+                ok_c = true;
+            }
+        }
+
+        private void Pharmacist_IdNumber_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode < Keys.D0 || e.KeyCode > Keys.D9)
+            {
+                if (e.KeyCode < Keys.NumPad0 || e.KeyCode > Keys.NumPad9)
+                {
+                    if (e.KeyCode != Keys.Back)
+                    {
+                        string abc = "ניתן להכניס מספרים בלבד";
+                        DialogResult result1 = MessageBox.Show(abc.ToString(), "Validate numbers", MessageBoxButtons.OK);
+                        Pharmacist_IdNumber.Text = "";
+                    }
+                }
+            }
+        }
+    }
 }
+
+
 
 
 

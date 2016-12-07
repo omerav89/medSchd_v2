@@ -62,7 +62,7 @@
             this.Cancel_Delete = new System.Windows.Forms.Button();
             this.panel_Medicine = new System.Windows.Forms.Panel();
             this.panel_Pharmacist = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
+            this.L_P_LN = new System.Windows.Forms.Label();
             this.panel_delete_medicine = new System.Windows.Forms.Panel();
             this.panel_delete_pharmacist = new System.Windows.Forms.Panel();
             this.OpenClient = new System.Windows.Forms.Button();
@@ -84,7 +84,7 @@
             this.Update_p_btn = new System.Windows.Forms.Button();
             this.panel_update_c = new System.Windows.Forms.Panel();
             this.Update_c_id_txt = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
+            this.Update_C_L = new System.Windows.Forms.Label();
             this.radioBtn_c_LN = new System.Windows.Forms.RadioButton();
             this.radioBtn_c_FN = new System.Windows.Forms.RadioButton();
             this.radioBtn_c_PN = new System.Windows.Forms.RadioButton();
@@ -92,7 +92,7 @@
             this.c_update_txt = new System.Windows.Forms.TextBox();
             this.panel_update_p = new System.Windows.Forms.Panel();
             this.Update_p_id_txt = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.Update_P_L = new System.Windows.Forms.Label();
             this.radioBtn_p_FN = new System.Windows.Forms.RadioButton();
             this.radioBtn_p_LN = new System.Windows.Forms.RadioButton();
             this.Update_now_p_btn = new System.Windows.Forms.Button();
@@ -101,6 +101,10 @@
             this.Cancel_update_btn = new System.Windows.Forms.Button();
             this.errorProvider_id = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorProvider_phone = new System.Windows.Forms.ErrorProvider(this.components);
+            this.Pharmacist_IdNumber = new System.Windows.Forms.TextBox();
+            this.L_P_id = new System.Windows.Forms.Label();
+            this.errorProvider_P_Id = new System.Windows.Forms.ErrorProvider(this.components);
+            this.errorProvider_update_p = new System.Windows.Forms.ErrorProvider(this.components);
             this.panel_Medicine.SuspendLayout();
             this.panel_Pharmacist.SuspendLayout();
             this.panel_delete_medicine.SuspendLayout();
@@ -111,6 +115,8 @@
             this.panel_update_p.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_id)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_phone)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider_P_Id)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider_update_p)).BeginInit();
             this.SuspendLayout();
             // 
             // startListen
@@ -265,7 +271,7 @@
             // 
             // Pharmacist_FName
             // 
-            this.Pharmacist_FName.Location = new System.Drawing.Point(18, 58);
+            this.Pharmacist_FName.Location = new System.Drawing.Point(18, 76);
             this.Pharmacist_FName.Name = "Pharmacist_FName";
             this.Pharmacist_FName.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.Pharmacist_FName.Size = new System.Drawing.Size(100, 20);
@@ -273,7 +279,7 @@
             // 
             // Pharmacist_LName
             // 
-            this.Pharmacist_LName.Location = new System.Drawing.Point(18, 117);
+            this.Pharmacist_LName.Location = new System.Drawing.Point(18, 124);
             this.Pharmacist_LName.Name = "Pharmacist_LName";
             this.Pharmacist_LName.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.Pharmacist_LName.Size = new System.Drawing.Size(100, 20);
@@ -282,7 +288,7 @@
             // L_P_FN
             // 
             this.L_P_FN.AutoSize = true;
-            this.L_P_FN.Location = new System.Drawing.Point(67, 31);
+            this.L_P_FN.Location = new System.Drawing.Point(67, 58);
             this.L_P_FN.Name = "L_P_FN";
             this.L_P_FN.Size = new System.Drawing.Size(51, 13);
             this.L_P_FN.TabIndex = 17;
@@ -419,7 +425,9 @@
             // 
             // panel_Pharmacist
             // 
-            this.panel_Pharmacist.Controls.Add(this.label1);
+            this.panel_Pharmacist.Controls.Add(this.L_P_id);
+            this.panel_Pharmacist.Controls.Add(this.Pharmacist_IdNumber);
+            this.panel_Pharmacist.Controls.Add(this.L_P_LN);
             this.panel_Pharmacist.Controls.Add(this.AddPharmacist);
             this.panel_Pharmacist.Controls.Add(this.L_P_FN);
             this.panel_Pharmacist.Controls.Add(this.Pharmacist_LName);
@@ -429,14 +437,14 @@
             this.panel_Pharmacist.Size = new System.Drawing.Size(129, 201);
             this.panel_Pharmacist.TabIndex = 33;
             // 
-            // label1
+            // L_P_LN
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(55, 87);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(63, 13);
-            this.label1.TabIndex = 20;
-            this.label1.Text = "שם משפחה";
+            this.L_P_LN.AutoSize = true;
+            this.L_P_LN.Location = new System.Drawing.Point(55, 108);
+            this.L_P_LN.Name = "L_P_LN";
+            this.L_P_LN.Size = new System.Drawing.Size(63, 13);
+            this.L_P_LN.TabIndex = 20;
+            this.L_P_LN.Text = "שם משפחה";
             // 
             // panel_delete_medicine
             // 
@@ -631,7 +639,7 @@
             // panel_update_c
             // 
             this.panel_update_c.Controls.Add(this.Update_c_id_txt);
-            this.panel_update_c.Controls.Add(this.label3);
+            this.panel_update_c.Controls.Add(this.Update_C_L);
             this.panel_update_c.Controls.Add(this.radioBtn_c_LN);
             this.panel_update_c.Controls.Add(this.radioBtn_c_FN);
             this.panel_update_c.Controls.Add(this.radioBtn_c_PN);
@@ -645,20 +653,20 @@
             // Update_c_id_txt
             // 
             this.Update_c_id_txt.Location = new System.Drawing.Point(12, 29);
-            this.Update_c_id_txt.MaxLength = 20;
+            this.Update_c_id_txt.MaxLength = 9;
             this.Update_c_id_txt.Name = "Update_c_id_txt";
             this.Update_c_id_txt.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.Update_c_id_txt.Size = new System.Drawing.Size(100, 20);
             this.Update_c_id_txt.TabIndex = 46;
             // 
-            // label3
+            // Update_C_L
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(40, 4);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(53, 13);
-            this.label3.TabIndex = 45;
-            this.label3.Text = "הכנס ת\"ז";
+            this.Update_C_L.AutoSize = true;
+            this.Update_C_L.Location = new System.Drawing.Point(40, 4);
+            this.Update_C_L.Name = "Update_C_L";
+            this.Update_C_L.Size = new System.Drawing.Size(53, 13);
+            this.Update_C_L.TabIndex = 45;
+            this.Update_C_L.Text = "הכנס ת\"ז";
             // 
             // radioBtn_c_LN
             // 
@@ -718,7 +726,7 @@
             // panel_update_p
             // 
             this.panel_update_p.Controls.Add(this.Update_p_id_txt);
-            this.panel_update_p.Controls.Add(this.label2);
+            this.panel_update_p.Controls.Add(this.Update_P_L);
             this.panel_update_p.Controls.Add(this.radioBtn_p_FN);
             this.panel_update_p.Controls.Add(this.radioBtn_p_LN);
             this.panel_update_p.Controls.Add(this.Update_now_p_btn);
@@ -731,20 +739,21 @@
             // Update_p_id_txt
             // 
             this.Update_p_id_txt.Location = new System.Drawing.Point(12, 26);
-            this.Update_p_id_txt.MaxLength = 20;
+            this.Update_p_id_txt.MaxLength = 6;
             this.Update_p_id_txt.Name = "Update_p_id_txt";
             this.Update_p_id_txt.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.Update_p_id_txt.Size = new System.Drawing.Size(100, 20);
             this.Update_p_id_txt.TabIndex = 47;
+            this.Update_p_id_txt.TextChanged += new System.EventHandler(this.Update_p_id_txt_TextChanged);
             // 
-            // label2
+            // Update_P_L
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(30, 1);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(82, 13);
-            this.label2.TabIndex = 20;
-            this.label2.Text = "הכנס מס\' זיהוי";
+            this.Update_P_L.AutoSize = true;
+            this.Update_P_L.Location = new System.Drawing.Point(30, 1);
+            this.Update_P_L.Name = "Update_P_L";
+            this.Update_P_L.Size = new System.Drawing.Size(82, 13);
+            this.Update_P_L.TabIndex = 20;
+            this.Update_P_L.Text = "הכנס מס\' זיהוי";
             // 
             // radioBtn_p_FN
             // 
@@ -816,6 +825,34 @@
             // 
             this.errorProvider_phone.ContainerControl = this;
             // 
+            // Pharmacist_IdNumber
+            // 
+            this.Pharmacist_IdNumber.Location = new System.Drawing.Point(18, 24);
+            this.Pharmacist_IdNumber.MaxLength = 6;
+            this.Pharmacist_IdNumber.Name = "Pharmacist_IdNumber";
+            this.Pharmacist_IdNumber.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.Pharmacist_IdNumber.Size = new System.Drawing.Size(100, 20);
+            this.Pharmacist_IdNumber.TabIndex = 21;
+            this.Pharmacist_IdNumber.TextChanged += new System.EventHandler(this.Pharmacist_IdNumber_TextChanged);
+            this.Pharmacist_IdNumber.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Pharmacist_IdNumber_KeyDown);
+            // 
+            // L_P_id
+            // 
+            this.L_P_id.AutoSize = true;
+            this.L_P_id.Location = new System.Drawing.Point(94, 7);
+            this.L_P_id.Name = "L_P_id";
+            this.L_P_id.Size = new System.Drawing.Size(24, 13);
+            this.L_P_id.TabIndex = 42;
+            this.L_P_id.Text = "ת\"ז";
+            // 
+            // errorProvider_P_Id
+            // 
+            this.errorProvider_P_Id.ContainerControl = this;
+            // 
+            // errorProvider_update_p
+            // 
+            this.errorProvider_update_p.ContainerControl = this;
+            // 
             // server
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -869,6 +906,8 @@
             this.panel_update_p.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_id)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_phone)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider_P_Id)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider_update_p)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -911,7 +950,7 @@
         private System.Windows.Forms.Panel panel_Pharmacist;
         private System.Windows.Forms.Panel panel_delete_medicine;
         private System.Windows.Forms.Panel panel_delete_pharmacist;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label L_P_LN;
         private System.Windows.Forms.Button OpenClient;
         private System.Windows.Forms.Label C_ID_L;
         private System.Windows.Forms.Label C_FN_L;
@@ -943,11 +982,15 @@
         private System.Windows.Forms.RadioButton radioBtn_p_FN;
         private System.Windows.Forms.RadioButton radioBtn_p_LN;
         private System.Windows.Forms.TextBox Update_c_id_txt;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label Update_C_L;
         private System.Windows.Forms.TextBox Update_p_id_txt;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label Update_P_L;
         private System.Windows.Forms.ErrorProvider errorProvider_id;
         private System.Windows.Forms.ErrorProvider errorProvider_phone;
+        private System.Windows.Forms.Label L_P_id;
+        private System.Windows.Forms.TextBox Pharmacist_IdNumber;
+        private System.Windows.Forms.ErrorProvider errorProvider_P_Id;
+        private System.Windows.Forms.ErrorProvider errorProvider_update_p;
     }
 }
 

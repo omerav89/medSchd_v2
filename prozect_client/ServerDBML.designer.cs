@@ -437,7 +437,7 @@ namespace prozect_client
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
-		private int _IdNumber;
+		private string _IdNumber;
 		
 		private string _FirstName;
 		
@@ -449,7 +449,7 @@ namespace prozect_client
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
-    partial void OnIdNumberChanging(int value);
+    partial void OnIdNumberChanging(string value);
     partial void OnIdNumberChanged();
     partial void OnFirstNameChanging(string value);
     partial void OnFirstNameChanged();
@@ -463,8 +463,8 @@ namespace prozect_client
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IdNumber", DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true)]
-		public int IdNumber
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IdNumber", DbType="NChar(6) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
+		public string IdNumber
 		{
 			get
 			{
@@ -589,15 +589,15 @@ namespace prozect_client
 		
 		private System.Nullable<int> _amountNight;
 		
-		private int _IdPharmacist;
+		private string _IdPharmacist;
 		
 		private int _id;
 		
 		private EntityRef<Client> _Client;
 		
-		private EntityRef<Pharmacist> _Pharmacist;
-		
 		private EntityRef<Medicine> _Medicine;
+		
+		private EntityRef<Pharmacist> _Pharmacist;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -617,7 +617,7 @@ namespace prozect_client
     partial void OnAmountNoonChanged();
     partial void OnAmountNightChanging(System.Nullable<int> value);
     partial void OnAmountNightChanged();
-    partial void OnIdPharmacistChanging(int value);
+    partial void OnIdPharmacistChanging(string value);
     partial void OnIdPharmacistChanged();
     partial void OnIdChanging(int value);
     partial void OnIdChanged();
@@ -626,8 +626,8 @@ namespace prozect_client
 		public Prescription()
 		{
 			this._Client = default(EntityRef<Client>);
-			this._Pharmacist = default(EntityRef<Pharmacist>);
 			this._Medicine = default(EntityRef<Medicine>);
+			this._Pharmacist = default(EntityRef<Pharmacist>);
 			OnCreated();
 		}
 		
@@ -655,7 +655,7 @@ namespace prozect_client
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IdClient", DbType="NChar(9) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IdClient", DbType="NVChar(9) NOT NULL", CanBeNull=false)]
 		public string IdClient
 		{
 			get
@@ -779,8 +779,8 @@ namespace prozect_client
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IdPharmacist", DbType="int")]
-		public int IdPharmacist
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IdPharmacist", DbType="NChar(6) NOT NULL", CanBeNull=false)]
+		public string IdPharmacist
 		{
 			get
 			{
@@ -857,40 +857,6 @@ namespace prozect_client
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Pharmacist_Prescription", Storage="_Pharmacist", ThisKey="IdPharmacist", OtherKey="IdNumber", IsForeignKey=true)]
-		public Pharmacist Pharmacist
-		{
-			get
-			{
-				return this._Pharmacist.Entity;
-			}
-			set
-			{
-				Pharmacist previousValue = this._Pharmacist.Entity;
-				if (((previousValue != value) 
-							|| (this._Pharmacist.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Pharmacist.Entity = null;
-						previousValue.Prescriptions.Remove(this);
-					}
-					this._Pharmacist.Entity = value;
-					if ((value != null))
-					{
-						value.Prescriptions.Add(this);
-						this._IdPharmacist = value.IdNumber;
-					}
-					else
-					{
-						this._IdPharmacist = default(int);
-					}
-					this.SendPropertyChanged("Pharmacist");
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Medicine_Prescription", Storage="_Medicine", ThisKey="IdMed", OtherKey="BrandName", IsForeignKey=true)]
 		public Medicine Medicine
 		{
@@ -921,6 +887,40 @@ namespace prozect_client
 						this._IdMed = default(string);
 					}
 					this.SendPropertyChanged("Medicine");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Pharmacist_Prescription", Storage="_Pharmacist", ThisKey="IdPharmacist", OtherKey="IdNumber", IsForeignKey=true)]
+		public Pharmacist Pharmacist
+		{
+			get
+			{
+				return this._Pharmacist.Entity;
+			}
+			set
+			{
+				Pharmacist previousValue = this._Pharmacist.Entity;
+				if (((previousValue != value) 
+							|| (this._Pharmacist.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Pharmacist.Entity = null;
+						previousValue.Prescriptions.Remove(this);
+					}
+					this._Pharmacist.Entity = value;
+					if ((value != null))
+					{
+						value.Prescriptions.Add(this);
+						this._IdPharmacist = value.IdNumber;
+					}
+					else
+					{
+						this._IdPharmacist = default(string);
+					}
+					this.SendPropertyChanged("Pharmacist");
 				}
 			}
 		}
