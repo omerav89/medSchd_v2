@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.startListen = new System.Windows.Forms.Button();
             this.cancelListen = new System.Windows.Forms.Button();
             this.Llisten = new System.Windows.Forms.Label();
             this.Add_Medicine_or_Pharmacist = new System.Windows.Forms.Button();
@@ -44,7 +43,6 @@
             this.BrandName_label = new System.Windows.Forms.Label();
             this.MedType_label = new System.Windows.Forms.Label();
             this.TakeOption_label = new System.Windows.Forms.Label();
-            this.TakeOption_Text = new System.Windows.Forms.TextBox();
             this.Pharmacist_FName = new System.Windows.Forms.TextBox();
             this.Pharmacist_LName = new System.Windows.Forms.TextBox();
             this.L_P_FN = new System.Windows.Forms.Label();
@@ -62,6 +60,8 @@
             this.Cancel_Delete = new System.Windows.Forms.Button();
             this.panel_Medicine = new System.Windows.Forms.Panel();
             this.panel_Pharmacist = new System.Windows.Forms.Panel();
+            this.L_P_id = new System.Windows.Forms.Label();
+            this.Pharmacist_IdNumber = new System.Windows.Forms.TextBox();
             this.L_P_LN = new System.Windows.Forms.Label();
             this.panel_delete_medicine = new System.Windows.Forms.Panel();
             this.panel_delete_pharmacist = new System.Windows.Forms.Panel();
@@ -101,10 +101,11 @@
             this.Cancel_update_btn = new System.Windows.Forms.Button();
             this.errorProvider_id = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorProvider_phone = new System.Windows.Forms.ErrorProvider(this.components);
-            this.Pharmacist_IdNumber = new System.Windows.Forms.TextBox();
-            this.L_P_id = new System.Windows.Forms.Label();
             this.errorProvider_P_Id = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorProvider_update_p = new System.Windows.Forms.ErrorProvider(this.components);
+            this.comboTakeOption = new System.Windows.Forms.ComboBox();
+            this.errorProvider_update_c = new System.Windows.Forms.ErrorProvider(this.components);
+            this.startListen = new System.Windows.Forms.Button();
             this.panel_Medicine.SuspendLayout();
             this.panel_Pharmacist.SuspendLayout();
             this.panel_delete_medicine.SuspendLayout();
@@ -117,17 +118,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_phone)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_P_Id)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_update_p)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider_update_c)).BeginInit();
             this.SuspendLayout();
-            // 
-            // startListen
-            // 
-            this.startListen.Location = new System.Drawing.Point(380, 562);
-            this.startListen.Name = "startListen";
-            this.startListen.Size = new System.Drawing.Size(88, 33);
-            this.startListen.TabIndex = 0;
-            this.startListen.Text = "האזן";
-            this.startListen.UseVisualStyleBackColor = true;
-            this.startListen.Click += new System.EventHandler(this.startListen_Click);
             // 
             // cancelListen
             // 
@@ -183,7 +175,7 @@
             // 
             // AddMedicine
             // 
-            this.AddMedicine.Location = new System.Drawing.Point(22, 165);
+            this.AddMedicine.Location = new System.Drawing.Point(21, 166);
             this.AddMedicine.Name = "AddMedicine";
             this.AddMedicine.Size = new System.Drawing.Size(89, 26);
             this.AddMedicine.TabIndex = 6;
@@ -260,14 +252,6 @@
             this.TakeOption_label.Size = new System.Drawing.Size(68, 13);
             this.TakeOption_label.TabIndex = 19;
             this.TakeOption_label.Text = "אופן לקיחה";
-            // 
-            // TakeOption_Text
-            // 
-            this.TakeOption_Text.Location = new System.Drawing.Point(11, 139);
-            this.TakeOption_Text.Name = "TakeOption_Text";
-            this.TakeOption_Text.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.TakeOption_Text.Size = new System.Drawing.Size(100, 20);
-            this.TakeOption_Text.TabIndex = 17;
             // 
             // Pharmacist_FName
             // 
@@ -409,8 +393,8 @@
             // 
             // panel_Medicine
             // 
+            this.panel_Medicine.Controls.Add(this.comboTakeOption);
             this.panel_Medicine.Controls.Add(this.TakeOption_label);
-            this.panel_Medicine.Controls.Add(this.TakeOption_Text);
             this.panel_Medicine.Controls.Add(this.MedType_label);
             this.panel_Medicine.Controls.Add(this.BrandName_label);
             this.panel_Medicine.Controls.Add(this.GenericName_label);
@@ -436,6 +420,26 @@
             this.panel_Pharmacist.Name = "panel_Pharmacist";
             this.panel_Pharmacist.Size = new System.Drawing.Size(129, 201);
             this.panel_Pharmacist.TabIndex = 33;
+            // 
+            // L_P_id
+            // 
+            this.L_P_id.AutoSize = true;
+            this.L_P_id.Location = new System.Drawing.Point(94, 7);
+            this.L_P_id.Name = "L_P_id";
+            this.L_P_id.Size = new System.Drawing.Size(24, 13);
+            this.L_P_id.TabIndex = 42;
+            this.L_P_id.Text = "ת\"ז";
+            // 
+            // Pharmacist_IdNumber
+            // 
+            this.Pharmacist_IdNumber.Location = new System.Drawing.Point(18, 24);
+            this.Pharmacist_IdNumber.MaxLength = 6;
+            this.Pharmacist_IdNumber.Name = "Pharmacist_IdNumber";
+            this.Pharmacist_IdNumber.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.Pharmacist_IdNumber.Size = new System.Drawing.Size(100, 20);
+            this.Pharmacist_IdNumber.TabIndex = 21;
+            this.Pharmacist_IdNumber.TextChanged += new System.EventHandler(this.Pharmacist_IdNumber_TextChanged);
+            this.Pharmacist_IdNumber.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Pharmacist_IdNumber_KeyDown);
             // 
             // L_P_LN
             // 
@@ -658,6 +662,7 @@
             this.Update_c_id_txt.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.Update_c_id_txt.Size = new System.Drawing.Size(100, 20);
             this.Update_c_id_txt.TabIndex = 46;
+            this.Update_c_id_txt.TextChanged += new System.EventHandler(this.Update_c_id_txt_TextChanged);
             // 
             // Update_C_L
             // 
@@ -825,26 +830,6 @@
             // 
             this.errorProvider_phone.ContainerControl = this;
             // 
-            // Pharmacist_IdNumber
-            // 
-            this.Pharmacist_IdNumber.Location = new System.Drawing.Point(18, 24);
-            this.Pharmacist_IdNumber.MaxLength = 6;
-            this.Pharmacist_IdNumber.Name = "Pharmacist_IdNumber";
-            this.Pharmacist_IdNumber.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.Pharmacist_IdNumber.Size = new System.Drawing.Size(100, 20);
-            this.Pharmacist_IdNumber.TabIndex = 21;
-            this.Pharmacist_IdNumber.TextChanged += new System.EventHandler(this.Pharmacist_IdNumber_TextChanged);
-            this.Pharmacist_IdNumber.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Pharmacist_IdNumber_KeyDown);
-            // 
-            // L_P_id
-            // 
-            this.L_P_id.AutoSize = true;
-            this.L_P_id.Location = new System.Drawing.Point(94, 7);
-            this.L_P_id.Name = "L_P_id";
-            this.L_P_id.Size = new System.Drawing.Size(24, 13);
-            this.L_P_id.TabIndex = 42;
-            this.L_P_id.Text = "ת\"ז";
-            // 
             // errorProvider_P_Id
             // 
             this.errorProvider_P_Id.ContainerControl = this;
@@ -852,6 +837,31 @@
             // errorProvider_update_p
             // 
             this.errorProvider_update_p.ContainerControl = this;
+            // 
+            // comboTakeOption
+            // 
+            this.comboTakeOption.FormattingEnabled = true;
+            this.comboTakeOption.Items.AddRange(new object[] {
+            "גלולה",
+            "זריקה",
+            "תמיסה"});
+            this.comboTakeOption.Location = new System.Drawing.Point(11, 139);
+            this.comboTakeOption.Name = "comboTakeOption";
+            this.comboTakeOption.Size = new System.Drawing.Size(99, 21);
+            this.comboTakeOption.TabIndex = 20;
+            // 
+            // errorProvider_update_c
+            // 
+            this.errorProvider_update_c.ContainerControl = this;
+            // 
+            // startListen
+            // 
+            this.startListen.Location = new System.Drawing.Point(380, 562);
+            this.startListen.Name = "startListen";
+            this.startListen.Size = new System.Drawing.Size(88, 33);
+            this.startListen.TabIndex = 0;
+            this.startListen.Text = "האזן";
+            this.startListen.UseVisualStyleBackColor = true;
             // 
             // server
             // 
@@ -908,14 +918,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_phone)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_P_Id)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_update_p)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider_update_c)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Button startListen;
         private System.Windows.Forms.Button cancelListen;
         private System.Windows.Forms.Label Llisten;
         private System.Windows.Forms.Button Add_Medicine_or_Pharmacist;
@@ -945,7 +954,6 @@
         private System.Windows.Forms.Button Cancel_Delete;
         private System.Windows.Forms.Button Delete_p;
         private System.Windows.Forms.Label TakeOption_label;
-        private System.Windows.Forms.TextBox TakeOption_Text;
         private System.Windows.Forms.Panel panel_Medicine;
         private System.Windows.Forms.Panel panel_Pharmacist;
         private System.Windows.Forms.Panel panel_delete_medicine;
@@ -991,6 +999,9 @@
         private System.Windows.Forms.TextBox Pharmacist_IdNumber;
         private System.Windows.Forms.ErrorProvider errorProvider_P_Id;
         private System.Windows.Forms.ErrorProvider errorProvider_update_p;
+        private System.Windows.Forms.ComboBox comboTakeOption;
+        private System.Windows.Forms.ErrorProvider errorProvider_update_c;
+        private System.Windows.Forms.Button startListen;
     }
 }
 

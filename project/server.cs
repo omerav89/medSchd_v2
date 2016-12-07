@@ -224,11 +224,7 @@ namespace project
                 }
             }
         }
-        private void startListen_Click(object sender, EventArgs e)//התחלת האזנה ברגע לחציה על כפתור
-        {
-            
 
-        }
 
         private void cancelListen_Click(object sender, EventArgs e)//ביטול האזנה
         {
@@ -319,9 +315,18 @@ namespace project
 
         public void AddPharmacist_Click_1(object sender, EventArgs e)//הוספת רוקח לבסיס נתונים
         {
-            if (Pharmacist_IdNumber.TextLength < 6)
+            bool good = true;
+            if(!Regex.Match(Pharmacist_FName.Text, @"^[א-ת]+|([א-ת]+\s[א-ת]+)$").Success)
             {
-                MessageBox.Show("עלייך לבדוק את המידע שהכנסת ולנסות שנית");
+                good = false;
+            }
+            if(good || !Regex.Match(Pharmacist_LName.Text, @"^[א-ת]+|[א-ת]+\s[א-ת]+)$").Success)
+            {
+                good = false;
+            }
+            if (!good || Pharmacist_IdNumber.TextLength < 6)
+            {
+                MessageBox.Show("עלייך לבדוק את המידע שהכנסת ולנסות שנית\n וודא כי בשמות הוכנסו אותיות ובעברית בלבד");
             }
             else
             {
@@ -369,38 +374,71 @@ namespace project
         }
         public void AddMedicine_Click(object sender, EventArgs e)//הוספת תרופה לבסיס נתונים
         {
-            try
+            bool good = true;
+            if (!Regex.Match(GenericName_Text.Text, @"^[a-zA-Z]*$").Success)
             {
-                DataSet ds_medicine = new DataSet();
-                SqlDataAdapter da_medicine = new SqlDataAdapter("SELECT * FROM Medicine", connection);
-                SqlCommandBuilder cmd_medicine = new SqlCommandBuilder(da_medicine);
-                da_medicine.Fill(ds_medicine, "Medicine");
-                DataRow dr_medicine = ds_medicine.Tables["Medicine"].NewRow();
-                dr_medicine["GenericName"] = GenericName_Text.Text;
-                dr_medicine["BrandName"] = BrandName_Text.Text;
-                dr_medicine["MedType"] = MedType_Text.Text;
-                dr_medicine["TakeOption"] = TakeOption_Text.Text;
-                ds_medicine.Tables["Medicine"].Rows.Add(dr_medicine);
-                da_medicine.Update(ds_medicine, "Medicine");
-                MessageBox.Show("התרופה " + BrandName_Text.Text + " נוספה בהצלחה");
-                GenericName_Text.Text = "";
-                BrandName_Text.Text = "";
-                MedType_Text.Text = "";
-                TakeOption_Text.Text = "";
-                panel_Medicine.Visible = false;
-                Add_Medicine_or_Pharmacist.Visible = true;
-                cancel.Visible = false;
-                OpenMedicine.Visible = false;
+                good = false;
             }
-            catch (SqlException ex)
+            if (good || !Regex.Match(BrandName_Text.Text, @"^[א-ת]*$").Success || !Regex .Match(BrandName_Text.Text, @"^[א-ת]+\s[א-ת]+$").Success)
             {
-                MessageBox.Show("הייתה בעיה בהוספת " + BrandName_Text.Text + " אנא נסה שנית");
+                good = false;
+            }
+            if (good || !Regex.Match(MedType_Text.Text, @"^[א-ת]*$").Success || !Regex.Match(MedType_Text.Text, @"^[א-ת]+\s[א-ת]+$").Success)
+            {
+                good = false;
+            }
+            if(comboTakeOption.SelectedIndex==-1)
+            {
+                good = false;
+            }
+            if (!good )
+            {
+                MessageBox.Show("עלייך לבדוק את המידע שהכנסת ולנסות שנית\n שים לב כי על השם הגנרי להיות באנגלית");
+            }
+            else
+            {
+                try
+                {
+                    DataSet ds_medicine = new DataSet();
+                    SqlDataAdapter da_medicine = new SqlDataAdapter("SELECT * FROM Medicine", connection);
+                    SqlCommandBuilder cmd_medicine = new SqlCommandBuilder(da_medicine);
+                    da_medicine.Fill(ds_medicine, "Medicine");
+                    DataRow dr_medicine = ds_medicine.Tables["Medicine"].NewRow();
+                    dr_medicine["GenericName"] = GenericName_Text.Text;
+                    dr_medicine["BrandName"] = BrandName_Text.Text;
+                    dr_medicine["MedType"] = MedType_Text.Text;
+                    dr_medicine["TakeOption"] = comboTakeOption.SelectedItem;
+                    ds_medicine.Tables["Medicine"].Rows.Add(dr_medicine);
+                    da_medicine.Update(ds_medicine, "Medicine");
+                    MessageBox.Show("התרופה " + BrandName_Text.Text + " נוספה בהצלחה");
+                    GenericName_Text.Text = "";
+                    BrandName_Text.Text = "";
+                    MedType_Text.Text = "";
+                    comboTakeOption.SelectedIndex = -1;
+                    panel_Medicine.Visible = false;
+                    Add_Medicine_or_Pharmacist.Visible = true;
+                    cancel.Visible = false;
+                    OpenMedicine.Visible = false;
+                }
+                catch (SqlException ex)
+                {
+                    MessageBox.Show("הייתה בעיה בהוספת " + BrandName_Text.Text + " אנא נסה שנית");
 
+                }
             }
         }
         private void Add_c_btn_Click(object sender, EventArgs e)//הוספת לקוח
         {
-            if (C_Id_txt.TextLength < 9 || C_PN_txt.TextLength < 10)
+            bool good = true;
+            if (!Regex.Match(C_FN_txt.Text, @"^[א-ת]+|([א-ת]+\s[א-ת]+)$").Success)
+            {
+                good = false;
+            }
+            if (good || !Regex.Match(C_LN_txt.Text, @"^[א-ת]+|([א-ת]+\s[א-ת]+)$").Success)
+            {
+                good = false;
+            }
+            if (!good||C_Id_txt.TextLength < 9 || C_PN_txt.TextLength < 10)
             {
                 MessageBox.Show("בדוק היטב את המידע שהכנסת ונסה שנית");
             }
@@ -511,11 +549,14 @@ namespace project
             GenericName_Text.Text = "";
             BrandName_Text.Text = "";
             MedType_Text.Text = "";
-            TakeOption_Text.Text = "";
+            comboTakeOption.SelectedIndex = -1;
             C_Id_txt.Text = "";
             C_FN_txt.Text = "";
             C_LN_txt.Text = "";
             C_PN_txt.Text = "";
+            errorProvider_id.SetError(C_ID_L, "");
+            errorProvider_id.SetError(C_PN_L, "");
+            errorProvider_P_Id.SetError(L_P_id, "");
         }
 
 
@@ -744,13 +785,23 @@ namespace project
             radioBtn_c_FN.Checked = false;
             radioBtn_c_LN.Checked = false;
             radioBtn_c_PN.Checked = false;
+            errorProvider_P_Id.SetError(Update_p_id_txt, "");
         }
 
         private void Update_now_p_btn_Click(object sender, EventArgs e)//עדכון פרטי רוקח
         {
-            if (Update_p_id_txt.TextLength < 6)
+            bool good = true;
+            if (!Regex.Match(p_update_txt.Text, @"^[א-ת]+|([א-ת]+\s[א-ת])$").Success)
             {
-                MessageBox.Show("יש להכניס מספר זיהוי בעל 6 ספרות");
+                good = false;
+            }
+            if (good && !radioBtn_p_FN.Checked && !radioBtn_p_LN.Checked )
+            {
+                good = false;
+            }
+            if (!good || Update_p_id_txt.TextLength < 6)
+            {
+                MessageBox.Show("אנא בדוק שהמידע שהכנסת תקין ולנסות שנית");
             }
             else
             {
@@ -791,6 +842,7 @@ namespace project
                         panel_update_p.Visible = false;
                         Update_p_btn.Visible = false;
                         Cancel_update_btn.Visible = false;
+                        radioBtn_p_FN.Checked = false;
 
                     }
 
@@ -810,6 +862,7 @@ namespace project
                         panel_update_p.Visible = false;
                         Update_p_btn.Visible = false;
                         Cancel_update_btn.Visible = false;
+                        radioBtn_p_LN.Checked = false;
                     }
 
                 }
@@ -819,80 +872,100 @@ namespace project
 
         private void Update_now_c_btn_Click(object sender, EventArgs e)//עדכון פרטי לקוח
         {
-            string str_id = "", str_update = c_update_txt.Text;
-            bool found = false;
-            DataSet ds_client_update = new DataSet();
-            SqlDataAdapter da_client_update = new SqlDataAdapter("SELECT * FROM client", connection);
-            da_client_update.Fill(ds_client_update, "client");
-            DataRow[] arr_c = ds_client_update.Tables["client"].Select("IdNumber =" + Update_c_id_txt.Text);
-
-            foreach (DataRow dr in arr_c)
+            bool good = true;
+            if (!Regex.Match(c_update_txt.Text, @"^[א-ת]+|([א-ת]+\s[א-ת])$").Success)
             {
-                found = true;
-                str_id += dr["IdNumber"].ToString();
-
+                good = false;
             }
-            if (!found)
+            if (good && !radioBtn_c_FN.Checked && !radioBtn_c_LN.Checked && !radioBtn_c_PN.Checked)
             {
-                MessageBox.Show("הלקוח אינו קיים במערכת");
-                Update_p_id_txt.Text = "";
+                good = false;
+            }
+            if (!good || Update_c_id_txt.TextLength < 9)
+            {
+                MessageBox.Show("אנא בדוק שהמידע שהכנסת תקין ולנסות שנית");
             }
             else
             {
-                if (radioBtn_c_PN.Checked)
+                string str_id = "", str_update = c_update_txt.Text;
+                bool found = false;
+                DataSet ds_client_update = new DataSet();
+                SqlDataAdapter da_client_update = new SqlDataAdapter("SELECT * FROM client", connection);
+                da_client_update.Fill(ds_client_update, "client");
+                DataRow[] arr_c = ds_client_update.Tables["client"].Select("IdNumber =" + Update_c_id_txt.Text);
+
+                foreach (DataRow dr in arr_c)
                 {
-                    string str_sql = "Update Client set PhoneNumber = @phon where IdNumber = @id";
-                    connection.Open();
-                    da_client_update.UpdateCommand = connection.CreateCommand();
-                    da_client_update.UpdateCommand.CommandText = str_sql;
-                    da_client_update.UpdateCommand.Parameters.AddWithValue("@phon", str_update);
-                    da_client_update.UpdateCommand.Parameters.AddWithValue("@id", str_id);
-                    da_client_update.UpdateCommand.ExecuteNonQuery();
-                    connection.Close();
-                    MessageBox.Show("עודכן בהצלחה");
-                    Update_c_id_txt.Text = "";
-                    c_update_txt.Text = "";
-                    panel_update_c.Visible = false;
-                    Update_c_btn.Visible = false;
-                    Cancel_update_btn.Visible = false;
+                    found = true;
+                    str_id += dr["IdNumber"].ToString();
+
                 }
-                else if (radioBtn_c_FN.Checked)
+                if (!found)
                 {
-                    string str_sql = "Update Client set FirstName = @fir where IdNumber = @id";
-                    connection.Open();
-                    da_client_update.UpdateCommand = connection.CreateCommand();
-                    da_client_update.UpdateCommand.CommandText = str_sql;
-                    da_client_update.UpdateCommand.Parameters.AddWithValue("@fir", str_update);
-                    da_client_update.UpdateCommand.Parameters.AddWithValue("@id", str_id);
-                    da_client_update.UpdateCommand.ExecuteNonQuery();
-                    connection.Close();
-                    MessageBox.Show("עודכן בהצלחה");
-                    Update_c_id_txt.Text = "";
-                    c_update_txt.Text = "";
-                    panel_update_c.Visible = false;
-                    Update_c_btn.Visible = false;
-                    Cancel_update_btn.Visible = false;
-                }
-                else if (radioBtn_c_LN.Checked)
-                {
-                    string str_sql = "Update Client set LastName = @las where IdNumber = @id";
-                    connection.Open();
-                    da_client_update.UpdateCommand = connection.CreateCommand();
-                    da_client_update.UpdateCommand.CommandText = str_sql;
-                    da_client_update.UpdateCommand.Parameters.AddWithValue("@las", str_update);
-                    da_client_update.UpdateCommand.Parameters.AddWithValue("@id", str_id);
-                    da_client_update.UpdateCommand.ExecuteNonQuery();
-                    connection.Close();
-                    MessageBox.Show("עודכן בהצלחה");
-                    Update_c_id_txt.Text = "";
-                    c_update_txt.Text = "";
-                    panel_update_c.Visible = false;
-                    Update_c_btn.Visible = false;
-                    Cancel_update_btn.Visible = false;
+                    MessageBox.Show("הלקוח אינו קיים במערכת");
+                    Update_p_id_txt.Text = "";
                 }
                 else
                 {
-                    MessageBox.Show("עלייך לבחור אחת מן האפשרויות");
+                    if (radioBtn_c_PN.Checked)
+                    {
+                        string str_sql = "Update Client set PhoneNumber = @phon where IdNumber = @id";
+                        connection.Open();
+                        da_client_update.UpdateCommand = connection.CreateCommand();
+                        da_client_update.UpdateCommand.CommandText = str_sql;
+                        da_client_update.UpdateCommand.Parameters.AddWithValue("@phon", str_update);
+                        da_client_update.UpdateCommand.Parameters.AddWithValue("@id", str_id);
+                        da_client_update.UpdateCommand.ExecuteNonQuery();
+                        connection.Close();
+                        MessageBox.Show("עודכן בהצלחה");
+                        Update_c_id_txt.Text = "";
+                        c_update_txt.Text = "";
+                        panel_update_c.Visible = false;
+                        Update_c_btn.Visible = false;
+                        Cancel_update_btn.Visible = false;
+                        radioBtn_c_PN.Checked = false;
+                    }
+                    else if (radioBtn_c_FN.Checked)
+                    {
+                        string str_sql = "Update Client set FirstName = @fir where IdNumber = @id";
+                        connection.Open();
+                        da_client_update.UpdateCommand = connection.CreateCommand();
+                        da_client_update.UpdateCommand.CommandText = str_sql;
+                        da_client_update.UpdateCommand.Parameters.AddWithValue("@fir", str_update);
+                        da_client_update.UpdateCommand.Parameters.AddWithValue("@id", str_id);
+                        da_client_update.UpdateCommand.ExecuteNonQuery();
+                        connection.Close();
+                        MessageBox.Show("עודכן בהצלחה");
+                        Update_c_id_txt.Text = "";
+                        c_update_txt.Text = "";
+                        panel_update_c.Visible = false;
+                        Update_c_btn.Visible = false;
+                        Cancel_update_btn.Visible = false;
+                        radioBtn_c_FN.Checked = false;
+                        radioBtn_c_PN.Checked = false;
+                    }
+                    else if (radioBtn_c_LN.Checked)
+                    {
+                        string str_sql = "Update Client set LastName = @las where IdNumber = @id";
+                        connection.Open();
+                        da_client_update.UpdateCommand = connection.CreateCommand();
+                        da_client_update.UpdateCommand.CommandText = str_sql;
+                        da_client_update.UpdateCommand.Parameters.AddWithValue("@las", str_update);
+                        da_client_update.UpdateCommand.Parameters.AddWithValue("@id", str_id);
+                        da_client_update.UpdateCommand.ExecuteNonQuery();
+                        connection.Close();
+                        MessageBox.Show("עודכן בהצלחה");
+                        Update_c_id_txt.Text = "";
+                        c_update_txt.Text = "";
+                        panel_update_c.Visible = false;
+                        Update_c_btn.Visible = false;
+                        Cancel_update_btn.Visible = false;
+                        radioBtn_c_LN.Checked = false;
+                    }
+                    else
+                    {
+                        MessageBox.Show("עלייך לבחור אחת מן האפשרויות");
+                    }
                 }
             }
         }
@@ -973,12 +1046,12 @@ namespace project
             if (Pharmacist_IdNumber.TextLength < 6)
             {
                 errorProvider_P_Id.SetError(L_P_id, "6 ספרות בלבד");
-                ok_c = false;
+                
             }
             else
             {
                 errorProvider_P_Id.SetError(L_P_id, "");
-                ok_c = true;
+                
             }
         }
 
@@ -987,12 +1060,12 @@ namespace project
             if (Pharmacist_IdNumber.TextLength < 6)
             {
                 errorProvider_P_Id.SetError(Update_p_id_txt, "6 ספרות בלבד");
-                ok_c = false;
+                
             }
             else
             {
                 errorProvider_P_Id.SetError(Update_p_id_txt, "");
-                ok_c = true;
+                
             }
         }
 
@@ -1009,6 +1082,20 @@ namespace project
                         Pharmacist_IdNumber.Text = "";
                     }
                 }
+            }
+        }
+
+        private void Update_c_id_txt_TextChanged(object sender, EventArgs e)
+        {
+            if (Pharmacist_IdNumber.TextLength < 6)
+            {
+                errorProvider_update_c.SetError(Update_c_id_txt, "9 ספרות בלבד");
+
+            }
+            else
+            {
+                errorProvider_update_c.SetError(Update_c_id_txt, "");
+
             }
         }
     }
