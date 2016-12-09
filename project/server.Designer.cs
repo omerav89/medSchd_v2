@@ -59,6 +59,7 @@
             this.Delete_p = new System.Windows.Forms.Button();
             this.Cancel_Delete = new System.Windows.Forms.Button();
             this.panel_Medicine = new System.Windows.Forms.Panel();
+            this.comboTakeOption = new System.Windows.Forms.ComboBox();
             this.panel_Pharmacist = new System.Windows.Forms.Panel();
             this.L_P_id = new System.Windows.Forms.Label();
             this.Pharmacist_IdNumber = new System.Windows.Forms.TextBox();
@@ -103,9 +104,11 @@
             this.errorProvider_phone = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorProvider_P_Id = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorProvider_update_p = new System.Windows.Forms.ErrorProvider(this.components);
-            this.comboTakeOption = new System.Windows.Forms.ComboBox();
             this.errorProvider_update_c = new System.Windows.Forms.ErrorProvider(this.components);
             this.startListen = new System.Windows.Forms.Button();
+            this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
+            this.errorProvider_id_c_delete = new System.Windows.Forms.ErrorProvider(this.components);
+            this.errorProvider_id_p_delete = new System.Windows.Forms.ErrorProvider(this.components);
             this.panel_Medicine.SuspendLayout();
             this.panel_Pharmacist.SuspendLayout();
             this.panel_delete_medicine.SuspendLayout();
@@ -119,6 +122,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_P_Id)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_update_p)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_update_c)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider_id_c_delete)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider_id_p_delete)).BeginInit();
             this.SuspendLayout();
             // 
             // cancelListen
@@ -330,10 +335,13 @@
             // Id_pharmacist_text
             // 
             this.Id_pharmacist_text.Location = new System.Drawing.Point(52, 34);
+            this.Id_pharmacist_text.MaxLength = 6;
             this.Id_pharmacist_text.Name = "Id_pharmacist_text";
             this.Id_pharmacist_text.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.Id_pharmacist_text.Size = new System.Drawing.Size(65, 20);
             this.Id_pharmacist_text.TabIndex = 24;
+            this.Id_pharmacist_text.TextChanged += new System.EventHandler(this.Id_pharmacist_text_TextChanged);
+            this.Id_pharmacist_text.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Id_pharmacist_text_KeyDown);
             // 
             // Medicine_brand_text
             // 
@@ -406,6 +414,18 @@
             this.panel_Medicine.Name = "panel_Medicine";
             this.panel_Medicine.Size = new System.Drawing.Size(117, 197);
             this.panel_Medicine.TabIndex = 32;
+            // 
+            // comboTakeOption
+            // 
+            this.comboTakeOption.FormattingEnabled = true;
+            this.comboTakeOption.Items.AddRange(new object[] {
+            "גלולה",
+            "זריקה",
+            "תמיסה"});
+            this.comboTakeOption.Location = new System.Drawing.Point(11, 139);
+            this.comboTakeOption.Name = "comboTakeOption";
+            this.comboTakeOption.Size = new System.Drawing.Size(99, 21);
+            this.comboTakeOption.TabIndex = 20;
             // 
             // panel_Pharmacist
             // 
@@ -615,10 +635,13 @@
             // client_delete_text
             // 
             this.client_delete_text.Location = new System.Drawing.Point(22, 32);
+            this.client_delete_text.MaxLength = 9;
             this.client_delete_text.Name = "client_delete_text";
             this.client_delete_text.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.client_delete_text.Size = new System.Drawing.Size(70, 20);
             this.client_delete_text.TabIndex = 25;
+            this.client_delete_text.TextChanged += new System.EventHandler(this.client_delete_text_TextChanged);
+            this.client_delete_text.KeyDown += new System.Windows.Forms.KeyEventHandler(this.client_delete_text_KeyDown);
             // 
             // Update_c_btn
             // 
@@ -663,6 +686,7 @@
             this.Update_c_id_txt.Size = new System.Drawing.Size(100, 20);
             this.Update_c_id_txt.TabIndex = 46;
             this.Update_c_id_txt.TextChanged += new System.EventHandler(this.Update_c_id_txt_TextChanged);
+            this.Update_c_id_txt.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Update_c_id_txt_KeyDown);
             // 
             // Update_C_L
             // 
@@ -750,6 +774,7 @@
             this.Update_p_id_txt.Size = new System.Drawing.Size(100, 20);
             this.Update_p_id_txt.TabIndex = 47;
             this.Update_p_id_txt.TextChanged += new System.EventHandler(this.Update_p_id_txt_TextChanged);
+            this.Update_p_id_txt.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Update_p_id_txt_KeyDown);
             // 
             // Update_P_L
             // 
@@ -838,18 +863,6 @@
             // 
             this.errorProvider_update_p.ContainerControl = this;
             // 
-            // comboTakeOption
-            // 
-            this.comboTakeOption.FormattingEnabled = true;
-            this.comboTakeOption.Items.AddRange(new object[] {
-            "גלולה",
-            "זריקה",
-            "תמיסה"});
-            this.comboTakeOption.Location = new System.Drawing.Point(11, 139);
-            this.comboTakeOption.Name = "comboTakeOption";
-            this.comboTakeOption.Size = new System.Drawing.Size(99, 21);
-            this.comboTakeOption.TabIndex = 20;
-            // 
             // errorProvider_update_c
             // 
             this.errorProvider_update_c.ContainerControl = this;
@@ -862,6 +875,14 @@
             this.startListen.TabIndex = 0;
             this.startListen.Text = "האזן";
             this.startListen.UseVisualStyleBackColor = true;
+            // 
+            // errorProvider_id_c_delete
+            // 
+            this.errorProvider_id_c_delete.ContainerControl = this;
+            // 
+            // errorProvider_id_p_delete
+            // 
+            this.errorProvider_id_p_delete.ContainerControl = this;
             // 
             // server
             // 
@@ -919,6 +940,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_P_Id)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_update_p)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_update_c)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider_id_c_delete)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider_id_p_delete)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1002,6 +1025,9 @@
         private System.Windows.Forms.ComboBox comboTakeOption;
         private System.Windows.Forms.ErrorProvider errorProvider_update_c;
         private System.Windows.Forms.Button startListen;
+        private System.DirectoryServices.DirectoryEntry directoryEntry1;
+        private System.Windows.Forms.ErrorProvider errorProvider_id_c_delete;
+        private System.Windows.Forms.ErrorProvider errorProvider_id_p_delete;
     }
 }
 

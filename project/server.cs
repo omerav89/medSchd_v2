@@ -320,7 +320,7 @@ namespace project
             {
                 good = false;
             }
-            if(good || !Regex.Match(Pharmacist_LName.Text, @"^[א-ת]+|[א-ת]+\s[א-ת]+)$").Success)
+            if(!good || !Regex.Match(Pharmacist_LName.Text, @"^[א-ת]+|([א-ת]+\s[א-ת]+)$").Success)
             {
                 good = false;
             }
@@ -379,11 +379,11 @@ namespace project
             {
                 good = false;
             }
-            if (good || !Regex.Match(BrandName_Text.Text, @"^[א-ת]*$").Success || !Regex .Match(BrandName_Text.Text, @"^[א-ת]+\s[א-ת]+$").Success)
+            if (!good || !Regex.Match(BrandName_Text.Text, @"^[א-ת]+|([א-ת]+\s[א-ת]+)$").Success)
             {
                 good = false;
             }
-            if (good || !Regex.Match(MedType_Text.Text, @"^[א-ת]*$").Success || !Regex.Match(MedType_Text.Text, @"^[א-ת]+\s[א-ת]+$").Success)
+            if (!good || !Regex.Match(MedType_Text.Text, @"^[א-ת]+|([א-ת]+\s[א-ת]+)$").Success)
             {
                 good = false;
             }
@@ -434,7 +434,7 @@ namespace project
             {
                 good = false;
             }
-            if (good || !Regex.Match(C_LN_txt.Text, @"^[א-ת]+|([א-ת]+\s[א-ת]+)$").Success)
+            if (!good || !Regex.Match(C_LN_txt.Text, @"^[א-ת]+|([א-ת]+\s[א-ת]+)$").Success)
             {
                 good = false;
             }
@@ -508,28 +508,30 @@ namespace project
 
         private void OpenMedicine_Click(object sender, EventArgs e)//פתיחת הוספת תרופה
         {
-            panel_Medicine.Visible = true;
+            panel_Medicine.Visible = !panel_Medicine.Visible;
             OpenPharmacist.Visible = false;
             AddMedicine.Visible = true;
             OpenClient.Visible = false;
-            Add_Medicine_or_Pharmacist.Visible = false;
+            panel_Client.Visible = false;
+            panel_Pharmacist.Visible = false;
         }
 
         private void OpenPharmacist_Click(object sender, EventArgs e)//פתיחת הוספת רוקח
         {
-            panel_Pharmacist.Visible = true;
+            panel_Pharmacist.Visible = !panel_Pharmacist.Visible;
             OpenMedicine.Visible = false;
             AddPharmacist.Visible = true;
-            Add_Medicine_or_Pharmacist.Visible = false;
             OpenClient.Visible = false;
-
+            panel_Medicine.Visible = false;
+            panel_Client.Visible = false;
         }
         private void OpenClient_Click(object sender, EventArgs e)//פתיחת הוספת לקוח
         {
-            panel_Client.Visible = true;
+            panel_Client.Visible = !panel_Client.Visible;
             OpenMedicine.Visible = false;
             OpenPharmacist.Visible = false;
-            Add_Medicine_or_Pharmacist.Visible = false;
+            panel_Pharmacist.Visible = false;
+            panel_Medicine.Visible = false;
         }
 
 
@@ -572,11 +574,10 @@ namespace project
         private void Delete_Pharmacist_Click(object sender, EventArgs e)//נראות לאחר לחיצה על לחצן מחיקת רוקח
         {
             Delete_Medicine.Visible = false;
-            panel_delete_pharmacist.Visible = true;
-            Delete_Pharmacist.Visible = false;
-            Delete_Pharmacist_Medicine.Visible = false;
+            panel_delete_pharmacist.Visible = !panel_delete_pharmacist.Visible;
             delete_client.Visible = false;
-
+            panel_delete_client.Visible = false;
+            panel_delete_medicine.Visible = false;
         }
 
         private void Cancel_Delete_Click(object sender, EventArgs e)//נראות לאחר לחיצה על לחצן ביטול
@@ -598,22 +599,22 @@ namespace project
 
         private void Delete_Medicine_Click(object sender, EventArgs e)//נראות לאחר לחיצה על מחיקת תרופה
         {
-            panel_delete_medicine.Visible = true;
+            panel_delete_medicine.Visible = !panel_delete_medicine.Visible;
             panel_delete_pharmacist.Visible = false;
             Cancel_Delete.Visible = true;
             Delete_Pharmacist.Visible = false;
-            Delete_Pharmacist_Medicine.Visible = false;
             delete_client.Visible = false;
-
+            panel_delete_client.Visible = false;
         }
         private void delete_client_Click(object sender, EventArgs e)//נראות לאר לחיצה על מחיקת לקוח
         {
-            panel_delete_client.Visible = true;
+            panel_delete_client.Visible = !panel_delete_client.Visible;
             panel_delete_pharmacist.Visible = false;
             Cancel_Delete.Visible = true;
             Delete_Pharmacist.Visible = false;
-            Delete_Pharmacist_Medicine.Visible = false;
             Delete_Medicine.Visible = false;
+            Delete_Medicine.Visible = false;
+            panel_delete_medicine.Visible = false;
 
         }
 
@@ -760,13 +761,15 @@ namespace project
         private void Update_p_btn_Click(object sender, EventArgs e)//נראות עדכון רוקח
         {
             Update_c_btn.Visible = false;
-            panel_update_p.Visible = true;
+            panel_update_p.Visible = !panel_update_p.Visible;
+            panel_update_c.Visible = false;
         }
 
         private void Update_c_btn_Click(object sender, EventArgs e)//נראות עדכון לקוח
         {
             Update_p_btn.Visible = false;
-            panel_update_c.Visible = true;
+            panel_update_c.Visible = !panel_update_c.Visible;
+            panel_update_p.Visible = false;
         }
 
         private void Cancel_update_btn_Click(object sender, EventArgs e)//נראות לחצן ביטול
@@ -795,7 +798,7 @@ namespace project
             {
                 good = false;
             }
-            if (good && !radioBtn_p_FN.Checked && !radioBtn_p_LN.Checked )
+            if (!good && !radioBtn_p_FN.Checked && !radioBtn_p_LN.Checked )
             {
                 good = false;
             }
@@ -1055,7 +1058,7 @@ namespace project
             }
         }
 
-        private void Update_p_id_txt_TextChanged(object sender, EventArgs e)
+        private void Update_p_id_txt_TextChanged(object sender, EventArgs e)//התראה על ארוך מספר הזיהוי של הרוקח
         {
             if (Pharmacist_IdNumber.TextLength < 6)
             {
@@ -1069,7 +1072,7 @@ namespace project
             }
         }
 
-        private void Pharmacist_IdNumber_KeyDown(object sender, KeyEventArgs e)
+        private void Pharmacist_IdNumber_KeyDown(object sender, KeyEventArgs e)//בדיקת קלט מספר זיהוי בהוספת רוקח
         {
             if (e.KeyCode < Keys.D0 || e.KeyCode > Keys.D9)
             {
@@ -1085,7 +1088,7 @@ namespace project
             }
         }
 
-        private void Update_c_id_txt_TextChanged(object sender, EventArgs e)
+        private void Update_c_id_txt_TextChanged(object sender, EventArgs e)//התראה אל תקינות ת"ז בעדכון פרטי לקוח
         {
             if (Pharmacist_IdNumber.TextLength < 6)
             {
@@ -1096,6 +1099,98 @@ namespace project
             {
                 errorProvider_update_c.SetError(Update_c_id_txt, "");
 
+            }
+        }
+
+        private void Update_p_id_txt_KeyDown(object sender, KeyEventArgs e)//בדיקת קלט מספר זיהוי רוקח לעדכון פרטים
+        {
+            if (e.KeyCode < Keys.D0 || e.KeyCode > Keys.D9)
+            {
+                if (e.KeyCode < Keys.NumPad0 || e.KeyCode > Keys.NumPad9)
+                {
+                    if (e.KeyCode != Keys.Back)
+                    {
+                        string abc = "ניתן להכניס מספרים בלבד";
+                        DialogResult result1 = MessageBox.Show(abc.ToString(), "Validate numbers", MessageBoxButtons.OK);
+                        Update_p_id_txt.Text = "";
+                    }
+                }
+            }
+        }
+
+        private void Update_c_id_txt_KeyDown(object sender, KeyEventArgs e)//בדיקת קלט ת"ז לקוח לעדכון פרטים
+        {
+            if (e.KeyCode < Keys.D0 || e.KeyCode > Keys.D9)
+            {
+                if (e.KeyCode < Keys.NumPad0 || e.KeyCode > Keys.NumPad9)
+                {
+                    if (e.KeyCode != Keys.Back)
+                    {
+                        string abc = "ניתן להכניס מספרים בלבד";
+                        DialogResult result1 = MessageBox.Show(abc.ToString(), "Validate numbers", MessageBoxButtons.OK);
+                        Update_c_id_txt.Text = "";
+                    }
+                }
+            }
+        }
+
+        private void Id_pharmacist_text_KeyDown(object sender, KeyEventArgs e)//בדיקצ קלט מספר זיהוי רוקח למחיקה
+        {
+            if (e.KeyCode < Keys.D0 || e.KeyCode > Keys.D9)
+            {
+                if (e.KeyCode < Keys.NumPad0 || e.KeyCode > Keys.NumPad9)
+                {
+                    if (e.KeyCode != Keys.Back)
+                    {
+                        string abc = "ניתן להכניס מספרים בלבד";
+                        DialogResult result1 = MessageBox.Show(abc.ToString(), "Validate numbers", MessageBoxButtons.OK);
+                        Id_pharmacist_text.Text = "";
+                    }
+                }
+            }
+        }
+
+        private void client_delete_text_KeyDown(object sender, KeyEventArgs e)//בדיקת קלט ת"ז לקוח למחיקה
+        {
+            if (e.KeyCode < Keys.D0 || e.KeyCode > Keys.D9)
+            {
+                if (e.KeyCode < Keys.NumPad0 || e.KeyCode > Keys.NumPad9)
+                {
+                    if (e.KeyCode != Keys.Back)
+                    {
+                        string abc = "ניתן להכניס מספרים בלבד";
+                        DialogResult result1 = MessageBox.Show(abc.ToString(), "Validate numbers", MessageBoxButtons.OK);
+                        client_delete_text.Text = "";
+                    }
+                }
+            }
+        }
+
+        private void Id_pharmacist_text_TextChanged(object sender, EventArgs e)//תקינות אורך מסםר זיהוי רוקח במחיקה
+        {
+            if (Id_pharmacist_text.TextLength < 6)
+            {
+                errorProvider_id_p_delete.SetError(Id_pharmacist_text, "6 ספרות בלבד");
+
+            }
+            else
+            {
+                errorProvider_id_p_delete.SetError(Id_pharmacist_text, "");
+
+            }
+        }
+
+        private void client_delete_text_TextChanged(object sender, EventArgs e)//תקינות אורך ת"ז לקוח במחיקה
+        {
+            if (client_delete_text.TextLength < 9)
+            {
+                errorProvider_id_c_delete.SetError(client_delete_text, "9 ספרות בלבד");
+                ok_c = false;
+            }
+            else
+            {
+                errorProvider_id_c_delete.SetError(client_delete_text, "");
+                ok_c = true;
             }
         }
     }

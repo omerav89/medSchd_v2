@@ -32,5 +32,16 @@ namespace project.Properties {
                 return ((string)(this["TROFOTConnectionString"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Admin\\Documents\\GitH" +
+            "ub\\medSchd_v2\\DB\\TROFOT.mdf;Integrated Security=True;Connect Timeout=30")]
+        public string TROFOTConnectionString1 {
+            get {
+                return ((string)(this["TROFOTConnectionString1"]));
+            }
+        }
     }
 }
