@@ -20,7 +20,7 @@ namespace prozect_client
         {
             InitializeComponent();            
         }              
-        private void ConnectServer_SendData_Click(object sender, EventArgs e)//שליחת מידע לשרת ומשם לבסיס נתונים
+        private void ConnectServer_SendData_Click(object sender, EventArgs e)//send data to server >> db
         {
             if (comboMed.SelectedIndex != -1)
                 ok = true;
@@ -29,7 +29,7 @@ namespace prozect_client
             if (NightText.Text == "" && NoonText.Text == "" && MorningText.Text == "")
             {
                 ok = false;
-                MessageBox.Show("חייב להכניס כמות כדורים לפחות באחת מין האפשרויות");
+                MessageBox.Show("חייב להכניס כמות כדורים לפחות באחת מהאפשרויות");
 
             }
             else
@@ -39,6 +39,17 @@ namespace prozect_client
                 {
                     this.sendData();
                     SearchClientPanel.Visible = false;
+
+                    text_id.Text = "";
+                    text_fName.Text = "";
+                    text_lName.Text = "";
+                    paneldays.Visible = true;
+                    MorningText.Text = "";
+                    NoonText.Text = "";
+                    NightText.Text = "";
+                    comboMed.SelectedIndex = -1;
+                    NumOfDays_txt.Text = "";
+                    PhoneNumberText.Text = "";
                 }
 
                 else
@@ -46,55 +57,59 @@ namespace prozect_client
                     MessageBox.Show("עליך לבדוק כי כל השדות מולאו כראוי כדי להמשיך");
                 }
             }
+
         }
 
-        private void AddMedicine_Click_1(object sender, EventArgs e)//הוספת תרופה... פרטים מזהים נשארים וכל השאר מאופסים
+        private void AddMedicine_Click_1(object sender, EventArgs e)//add prescription and restart all except pharmacist and client info
         {
-            this.addMedicine();
+            this.sendData();
             SearchClientPanel.Visible = false;
+            comboMed.SelectedIndex = -1;
+            MorningText.Text = "";
+            NoonText.Text = "";
+            NightText.Text = "";
+            NumOfDays.Text = "";
         }
 
   
 
 
-        private void client_Load(object sender, EventArgs e)//הסדרת הפנאלים בעליית הפורם ופתיחת תהליכון של מילוי תרופות
+        private void client_Load(object sender, EventArgs e)//call setVisiblePanels and fill comboMed
         {
             this.setVisiblePanels();
-            try
-            {
-                Thread comboUpdate = new Thread(new ThreadStart(updateMedCombo));
-                comboUpdate.Start();
-            }
-            catch (Exception ex) { MessageBox.Show("יש בעיה בשרת אנא פנה לשירות טכני"); }
+            timer_ComboMed.Start();
+            ComboMedThread();
         }
 
         private void updateMedCombo()
         {
-            string[] meds = this.retrieveAllMedicne().Split(',');
-            this.BeginInvoke((Action)delegate () {
-                foreach (var med in meds)
+            string[] meds = this.retrieveAllMedicne().Split(',');          
+                this.BeginInvoke((Action)delegate ()
                 {
-                    if (med.Trim() != "")
-                        this.comboMed.Items.Add(med);
-                }
-            });
+                    foreach (var med in meds)
+                    {
+                        if (med.Trim() != "")
+                            this.comboMed.Items.Add(med);
+                    }
+                });
+            
         }
 
-        private void old_client_Click(object sender, EventArgs e)//פתיחה של חיפוש לקוח קיים
+        private void old_client_Click(object sender, EventArgs e)//open search client
         {
             SearchClientPanel.Visible = !SearchClientPanel.Visible;
         }
 
 
 
-        private void Search_client_Click(object sender, EventArgs e)//קריאה לחיפוש לקוח קיים והבאת הפרטים שלו לשדות המתאימים
+        private void Search_client_Click(object sender, EventArgs e)//search client and return his info
         {
             this.BringClient();
             ConnectServer_SendData.Visible = true;
             AddMedicine.Visible = true;
         }
 
-        private void bring_p_btn_Click(object sender, EventArgs e)//קריאה להבאת שם רוקח
+        private void bring_p_btn_Click(object sender, EventArgs e)//bring pharmacist
         {
             this.BringPharmacist();
             bring_p_btn.Visible = false;
@@ -102,12 +117,8 @@ namespace prozect_client
             Pharmacist_number_txt.ReadOnly = true;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void change_p_btn_Click(object sender, EventArgs e)//נראות החלפת מס' רוקח
+        
+        private void change_p_btn_Click(object sender, EventArgs e)//visiblity when you want to change pharmacist
         {
             Pharmacist_number_txt.Text = "";
             Pharmacist_number_txt.ReadOnly = false;
@@ -115,7 +126,7 @@ namespace prozect_client
             change_p_btn.Visible = false;
         }
 
-        private void Id_old_client_text_TextChanged(object sender, EventArgs e)//בדיקת אורך קלט והתראה של מספר ת"ז
+        private void Id_old_client_text_TextChanged(object sender, EventArgs e)//check lengh of client id
         {
             if (Id_old_client_text.TextLength < 9)
             {
@@ -126,11 +137,11 @@ namespace prozect_client
             {
                 errorId.SetError(Id_old_client_label, "");
                 ok = true;
-                throw new Exception();
+                
             }
         }
         
-        private void Id_old_client_text_KeyDown(object sender, KeyEventArgs e)//תקינות קלט של מספר ת"ז
+        private void Id_old_client_text_KeyDown(object sender, KeyEventArgs e)//check input of client id
         {
             if (e.KeyCode < Keys.D0 || e.KeyCode > Keys.D9)
             {
@@ -149,7 +160,7 @@ namespace prozect_client
                 ok = true;
         }
 
-        private void Pharmacist_number_txt_KeyDown(object sender, KeyEventArgs e)//תקינות קלט מס' רוקח
+        private void Pharmacist_number_txt_KeyDown(object sender, KeyEventArgs e)//check input of pharmacist id
         {
             if (e.KeyCode < Keys.D0 || e.KeyCode > Keys.D9)
             {
@@ -168,7 +179,7 @@ namespace prozect_client
                 ok = true;
         }
 
-        private void NumOfDays_txt_KeyDown(object sender, KeyEventArgs e)//תקינות קלט של מספר ימים
+        private void NumOfDays_txt_KeyDown(object sender, KeyEventArgs e)//check the input at numOfDays
         {
             if (e.KeyCode < Keys.D0 || e.KeyCode > Keys.D9)
             {
@@ -187,13 +198,34 @@ namespace prozect_client
                 ok = true;
         }
 
-        private void client_FormClosing(object sender, FormClosingEventArgs e)
+        private void client_FormClosing(object sender, FormClosingEventArgs e)//closing form
         {
             this.notifyCloseRemoteSide();
             Environment.Exit(Environment.ExitCode);
         }
 
+        private void ComboMedThread ()//start a thread that fill the combobox or meds
+        {
+            try
+            {
+                Thread comboUpdate = new Thread(new ThreadStart(updateMedCombo));
+                comboUpdate.IsBackground = true;
+                comboUpdate.Start();
+            }
+            catch (Exception ex) { MessageBox.Show("יש בעיה בשרת אנא פנה לשירות טכני"); }
+        }
 
+        private void timer_ComboMed_Tick(object sender, EventArgs e)//refresh comboMed every 1 hour
+        {
+            comboMed.Items.Clear();
+            ComboMedThread();
+            timer_ComboMed.Start();
+        }
 
+        private void refresh_combo_med_Click(object sender, EventArgs e)//refresh comboMed with button click
+        {
+            comboMed.Items.Clear();
+            ComboMedThread();
+        }
     }
 }

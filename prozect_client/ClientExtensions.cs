@@ -25,7 +25,7 @@ namespace prozect_client
             cs.change_p_btn.Visible = false;
         }
 
-        public static void connectToServer(string ip, int port)//פתיחת קשר לשרת
+        public static void connectToServer(string ip, int port)//create tcp client and connect to server
         {
             try
             {
@@ -33,14 +33,15 @@ namespace prozect_client
                 {
                     Client = new TcpClient();
 
-                    Client.Connect(ip, port);
+                    Client.Connect(ip, port);                   
+                 
+                        stream = Client.GetStream();
 
-                    stream = Client.GetStream();
+                        reader = new BinaryReader(stream);
+                        writer = new BinaryWriter(stream);
 
-                    reader = new BinaryReader(stream);
-                    writer = new BinaryWriter(stream);
-
-                    string str = reader.ReadString();
+                        string str = reader.ReadString();
+                    
                 }
 
             }
@@ -50,15 +51,16 @@ namespace prozect_client
             }
         }
 
-        public static string retrieveAllMedicne(this client cs)
+        public static string retrieveAllMedicne(this client cs)//connect server and ask for string with all the meds
         {
             connectToServer("127.0.0.1", 8001);
-            writer.Write("MedCombo");
-            return reader.ReadString();
+                writer.Write("MedCombo");
+                return reader.ReadString();
+            
         }
 
 
-        public static void notifyCloseRemoteSide(this client cs)
+        public static void notifyCloseRemoteSide(this client cs)//close client
         {
             if (Client != null && Client.Connected)
             {
@@ -66,18 +68,9 @@ namespace prozect_client
             }
         }
 
-        public static void addMedicine(this client cs)//איפוס לאחר הוספת תרופה
-        {
-            cs.comboMed.SelectedIndex = -1;
-            cs.MorningText.Text = null;
-            cs.NoonText.Text = null;
-            cs.NightText.Text = null;
-            cs.NumOfDays.Text = "";
 
 
-        }
-
-        public static void sendData(this client cs)//בדיקת תקינות ושליחת מידע
+        public static void sendData(this client cs)//chek input >> connect >> send prescription to server >> db
         {
             int cnt = 0;
             connectToServer("127.0.0.1", 8001);
@@ -131,17 +124,7 @@ namespace prozect_client
                 }
             }
 
-            //איפוס משתנים לאחר שליחה
-            cs.text_id.Text = "";
-            cs.text_fName.Text = "";
-            cs.text_lName.Text = "";
-            cs.paneldays.Visible = true;
-            cs.MorningText.Text = "";
-            cs.NoonText.Text = "";
-            cs.NightText.Text = "";
-            cs.comboMed.SelectedIndex = -1;
-            cs.NumOfDays_txt.Text="";
-            cs.PhoneNumberText.Text = "";
+            
 
         }
 
@@ -149,8 +132,8 @@ namespace prozect_client
 
 
 
-        public static void BringClient(this client cs)//חיפוש לקוח קיים והבאת הפרטים שלו לשדות המתאימים
-        {
+        public static void BringClient(this client cs)//connect server >> search client by id >> return info >> put in textBox
+        {            
             int cnt = 0;
             connectToServer("127.0.0.1", 8001);
             while (cnt < 2)
@@ -177,6 +160,10 @@ namespace prozect_client
                         cs.text_fName.Text = newClient.FirstName;
                         cs.text_lName.Text = newClient.LastName;
                         cnt++;
+                        newClient.ClientId = "";
+                        newClient.PhoneNumber = "";
+                        newClient.FirstName = "";
+                        newClient.LastName = "";
                     }
                 }
             }
@@ -185,7 +172,7 @@ namespace prozect_client
 
         }
 
-        public static void BringPharmacist(this client cs)//יבוא שם פרטי של רוקח לפי מספר מזהה שלו
+        public static void BringPharmacist(this client cs)//connect server >> search pharmacist by id >> return his first name >> put in textBox
         {
             string PharmacistName = "";
             int cnt = 0;

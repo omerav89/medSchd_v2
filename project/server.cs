@@ -36,10 +36,11 @@ namespace project
         {
             InitializeComponent();
             thread = new Thread(listen);
+            thread.IsBackground = true;
             connection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Admin\Documents\GitHub\medSchd_v2\DB\TROFOT.mdf;Integrated Security=True;Connect Timeout=30");
         }
 
-        private void server_Load(object sender, EventArgs e)
+        private void server_Load(object sender, EventArgs e)// set visibilty when server load
         {
             keepListening = true;
             thread.Start();
@@ -68,11 +69,12 @@ namespace project
             Update_c_btn.Visible = false;
             Update_p_btn.Visible = false;
             cancel.Visible = false;
+            Cancel_update_btn.Visible = false;
         }
 
 
 
-        public void listen()//הגדרת האזנה של השרת
+        public void listen()//create tcp listener >> start listen >> start background thread of clientHandler 
         {
 
             keepListening = true;
@@ -89,6 +91,7 @@ namespace project
 
 
                 Thread thread = new Thread(clientHandler);
+                thread.IsBackground = true;
                 thread.Start(client);
 
             }
@@ -97,7 +100,7 @@ namespace project
 
         }
 
-        public void clientHandler(object clientConection)//פתיחת סטרים וקבלת מידע מהלקוח.. הצגת הודעה על העברה מוצלחת או בעיה בהעברה
+        public void clientHandler(object clientConection)//create new client and open stream >> receive data from client
         {
             NewClient newC = new NewClient();
             string str = "";
@@ -124,6 +127,11 @@ namespace project
                     medSchd_json = reader.ReadString();
                     medSchd = JsonConvert.DeserializeObject<MedSchd>(medSchd_json);
                     initConnection();
+                    ClientUpdate up = new ClientUpdate();
+                    up.Amount = 10;
+                    up.MedType = "Advil";
+                    for (int i = 0; i < 10; i++)
+                        writer.Write("TESTING: " + i);
                 }
                 else if (str == "clientId")
                 {
@@ -146,10 +154,10 @@ namespace project
                         }
                         if (!found)
                         {
-                            newC.ClientId = null;
-                            newC.FirstName = null;
-                            newC.LastName = null;
-                            newC.PhoneNumber = null;
+                            newC.ClientId = "";
+                            newC.FirstName = "";
+                            newC.LastName = "";
+                            newC.PhoneNumber = "";
                             string client_json = JsonConvert.SerializeObject(newC);
                             writer.Write(client_json);
                         }
@@ -157,11 +165,16 @@ namespace project
                         {
                             string client_json = JsonConvert.SerializeObject(newC);
                             writer.Write(client_json);
+                            newC.ClientId = "";
+                            newC.FirstName = "";
+                            newC.LastName = "";
+                            newC.PhoneNumber = "";
                         }
                     }
                     catch (Exception ex)
                     {
                         MessageBox.Show(ex.ToString());
+
                     }
                 }
 
@@ -220,13 +233,22 @@ namespace project
                     }
 
                     writer.Write(med_str);
+                }
+
+                else if (str == "androidClient")
+                {
+                    str = reader.ReadString();
+                    DataSet ds_Android = new DataSet();
+                    SqlDataAdapter da_android = new SqlDataAdapter("select IdClient,IdMed,AmountMorning, AmountNoon,AmountNight,StartTaking,NumOfDays FROM Prescription", connection);
+                    da_android.Fill(ds_Android, "Prescription");
+                    DataRow[] arr_p = ds_Android.Tables["Prescription"].Select("IdClient =" + str);
 
                 }
             }
-        }
+    }
 
 
-        private void cancelListen_Click(object sender, EventArgs e)//ביטול האזנה
+    private void cancelListen_Click(object sender, EventArgs e)//close server
         {
             keepListening = false;
             Environment.Exit(Environment.ExitCode);
@@ -234,7 +256,7 @@ namespace project
         }
 
 
-        private void setUpDataAdapter()//הגדרת מגשר בין בסיס נתונים ומחלקת מידע מנותקת
+        private void setUpDataAdapter()//open connection to db and pull out prescription table
         {
 
             dataAdapter_Prescription = new SqlDataAdapter("select IdMed, IdClient, StartTaking, NumOfDays, AmountMorning, AmountNoon, AmountNight, IdPharmacist From Prescription", connection);
@@ -263,7 +285,7 @@ namespace project
             }
         }
 
-        public void updateDataSet(DataSet ds, string tableName)//עדכון אובייקט המחזיק מידע לשליחה לבסיס נתונים
+        public void updateDataSet(DataSet ds, string tableName)//update prescription table
         {
 
             try
@@ -280,7 +302,7 @@ namespace project
             }
         }
 
-        public void InsertToDataBase()//הכנסת מידע לבסיס נתונים לאחר בדיקת תקינות
+        public void InsertToDataBase()//insert data to prescription in db
         {
 
             try
@@ -298,7 +320,7 @@ namespace project
                 dataAdapter_Prescription.Update(dataSet, "Prescription");
                 MessageBox.Show("המרשם צורף");
 
-                //updateDataSet(dataSet, "Prescription",temp);
+                
 
             }
             catch (SqlException ex)
@@ -313,7 +335,7 @@ namespace project
 
 
 
-        public void AddPharmacist_Click_1(object sender, EventArgs e)//הוספת רוקח לבסיס נתונים
+        public void AddPharmacist_Click_1(object sender, EventArgs e)//add pharmacist to db
         {
             bool good = true;
             if(!Regex.Match(Pharmacist_FName.Text, @"^[א-ת]+|([א-ת]+\s[א-ת]+)$").Success)
@@ -372,7 +394,7 @@ namespace project
             }
 
         }
-        public void AddMedicine_Click(object sender, EventArgs e)//הוספת תרופה לבסיס נתונים
+        public void AddMedicine_Click(object sender, EventArgs e)//add medicine to db
         {
             bool good = true;
             if (!Regex.Match(GenericName_Text.Text, @"^[a-zA-Z]*$").Success)
@@ -422,12 +444,13 @@ namespace project
                 }
                 catch (SqlException ex)
                 {
+
                     MessageBox.Show("הייתה בעיה בהוספת " + BrandName_Text.Text + " אנא נסה שנית");
 
                 }
             }
         }
-        private void Add_c_btn_Click(object sender, EventArgs e)//הוספת לקוח
+        private void Add_c_btn_Click(object sender, EventArgs e)//add client to db
         {
             bool good = true;
             if (!Regex.Match(C_FN_txt.Text, @"^[א-ת]+|([א-ת]+\s[א-ת]+)$").Success)
@@ -498,7 +521,7 @@ namespace project
 
         }
 
-        private void Add_Medicine_or_Pharmacist_Click(object sender, EventArgs e)//פיתחת אפשרות להוספת רוקח / תרופה
+        private void Add_Medicine_or_Pharmacist_Click(object sender, EventArgs e)//visibility when want to add med/pharmacist/client
         {
             OpenMedicine.Visible = true;
             OpenPharmacist.Visible = true;
@@ -506,7 +529,7 @@ namespace project
             cancel.Visible = true;
         }
 
-        private void OpenMedicine_Click(object sender, EventArgs e)//פתיחת הוספת תרופה
+        private void OpenMedicine_Click(object sender, EventArgs e)//visibility when want to add medecine
         {
             panel_Medicine.Visible = !panel_Medicine.Visible;
             OpenPharmacist.Visible = false;
@@ -516,7 +539,7 @@ namespace project
             panel_Pharmacist.Visible = false;
         }
 
-        private void OpenPharmacist_Click(object sender, EventArgs e)//פתיחת הוספת רוקח
+        private void OpenPharmacist_Click(object sender, EventArgs e)//visibility when want to add pharmacist
         {
             panel_Pharmacist.Visible = !panel_Pharmacist.Visible;
             OpenMedicine.Visible = false;
@@ -525,7 +548,7 @@ namespace project
             panel_Medicine.Visible = false;
             panel_Client.Visible = false;
         }
-        private void OpenClient_Click(object sender, EventArgs e)//פתיחת הוספת לקוח
+        private void OpenClient_Click(object sender, EventArgs e)//visibility when want to add client
         {
             panel_Client.Visible = !panel_Client.Visible;
             OpenMedicine.Visible = false;
@@ -535,7 +558,7 @@ namespace project
         }
 
 
-        private void cancel_Click(object sender, EventArgs e)//לחצן ביטול
+        private void cancel_Click(object sender, EventArgs e)//cancel button  set visibility and set texts
         {
             OpenPharmacist.Visible = false;
             OpenMedicine.Visible = false;
@@ -563,7 +586,7 @@ namespace project
 
 
 
-        private void Delete_Pharmacist_Medicine_Click(object sender, EventArgs e)//נראות לאחר לחיצה על לחצן מחקית תרופה/רוקח
+        private void Delete_Pharmacist_Medicine_Click(object sender, EventArgs e)//visibility after press on delete med/pharmacist/client
         {
             Delete_Medicine.Visible = true;
             Delete_Pharmacist.Visible = true;
@@ -571,7 +594,7 @@ namespace project
             delete_client.Visible = true;
         }
 
-        private void Delete_Pharmacist_Click(object sender, EventArgs e)//נראות לאחר לחיצה על לחצן מחיקת רוקח
+        private void Delete_Pharmacist_Click(object sender, EventArgs e)//visibility after press on delete pharmacist
         {
             Delete_Medicine.Visible = false;
             panel_delete_pharmacist.Visible = !panel_delete_pharmacist.Visible;
@@ -580,7 +603,7 @@ namespace project
             panel_delete_medicine.Visible = false;
         }
 
-        private void Cancel_Delete_Click(object sender, EventArgs e)//נראות לאחר לחיצה על לחצן ביטול
+        private void Cancel_Delete_Click(object sender, EventArgs e)//visibility after press on cancel button
         {
             panel_delete_pharmacist.Visible = false;
             panel_delete_medicine.Visible = false;
@@ -597,7 +620,7 @@ namespace project
 
         }
 
-        private void Delete_Medicine_Click(object sender, EventArgs e)//נראות לאחר לחיצה על מחיקת תרופה
+        private void Delete_Medicine_Click(object sender, EventArgs e)//visibility after press on delete med
         {
             panel_delete_medicine.Visible = !panel_delete_medicine.Visible;
             panel_delete_pharmacist.Visible = false;
@@ -606,7 +629,7 @@ namespace project
             delete_client.Visible = false;
             panel_delete_client.Visible = false;
         }
-        private void delete_client_Click(object sender, EventArgs e)//נראות לאר לחיצה על מחיקת לקוח
+        private void delete_client_Click(object sender, EventArgs e)//visibility after press on delete client
         {
             panel_delete_client.Visible = !panel_delete_client.Visible;
             panel_delete_pharmacist.Visible = false;
@@ -618,7 +641,7 @@ namespace project
 
         }
 
-        private void Delete_p_Click(object sender, EventArgs e)//מחיקת רוקח לפי מספר זיהוי שלו
+        private void Delete_p_Click(object sender, EventArgs e)//delete pharmacist by id
         {
 
             string str_pharmcist_FN = "שם פרטי: ", str_pharmacist_LN = "שם משפחה: ";
@@ -660,7 +683,7 @@ namespace project
         }
 
 
-        private void delete_m_Click(object sender, EventArgs e)//מחיקת תרופה לפי שם מותג
+        private void delete_m_Click(object sender, EventArgs e)//delete med by brandName
         {
             try
             {
@@ -703,7 +726,7 @@ namespace project
 
         }
 
-        private void delete_c_Click(object sender, EventArgs e)//מחיקת לקוח לפי ת"ז
+        private void delete_c_Click(object sender, EventArgs e)//deldete client by id
         {
             try
             {
@@ -751,28 +774,28 @@ namespace project
 
         }
 
-        private void Update_btn_Click(object sender, EventArgs e)//נראות פתיחת עדכונים
+        private void Update_btn_Click(object sender, EventArgs e)//visibility after press update btn
         {
             Update_p_btn.Visible = true;
             Update_c_btn.Visible = true;
             Cancel_update_btn.Visible = true;
         }
 
-        private void Update_p_btn_Click(object sender, EventArgs e)//נראות עדכון רוקח
+        private void Update_p_btn_Click(object sender, EventArgs e)//visibility pharmacist update
         {
             Update_c_btn.Visible = false;
             panel_update_p.Visible = !panel_update_p.Visible;
             panel_update_c.Visible = false;
         }
 
-        private void Update_c_btn_Click(object sender, EventArgs e)//נראות עדכון לקוח
+        private void Update_c_btn_Click(object sender, EventArgs e)//visibility client update
         {
             Update_p_btn.Visible = false;
             panel_update_c.Visible = !panel_update_c.Visible;
             panel_update_p.Visible = false;
         }
 
-        private void Cancel_update_btn_Click(object sender, EventArgs e)//נראות לחצן ביטול
+        private void Cancel_update_btn_Click(object sender, EventArgs e)//visibility cancel update btn
         {
             panel_update_c.Visible = false;
             panel_update_p.Visible = false;
@@ -791,7 +814,7 @@ namespace project
             errorProvider_P_Id.SetError(Update_p_id_txt, "");
         }
 
-        private void Update_now_p_btn_Click(object sender, EventArgs e)//עדכון פרטי רוקח
+        private void Update_now_p_btn_Click(object sender, EventArgs e)//update pharmacist info
         {
             bool good = true;
             if (!Regex.Match(p_update_txt.Text, @"^[א-ת]+|([א-ת]+\s[א-ת])$").Success)
@@ -873,7 +896,7 @@ namespace project
 
         }
 
-        private void Update_now_c_btn_Click(object sender, EventArgs e)//עדכון פרטי לקוח
+        private void Update_now_c_btn_Click(object sender, EventArgs e)//update client info
         {
             bool good = true;
             if (!Regex.Match(c_update_txt.Text, @"^[א-ת]+|([א-ת]+\s[א-ת])$").Success)
@@ -973,7 +996,7 @@ namespace project
             }
         }
 
-        private void C_Id_txt_TextChanged(object sender, EventArgs e)//תקינות אורך ת"ז
+        private void C_Id_txt_TextChanged(object sender, EventArgs e)//check id length 
         {
             if (C_Id_txt.TextLength < 9)
             {
@@ -987,7 +1010,7 @@ namespace project
             }
         }
 
-        private void C_Id_txt_KeyDown(object sender, KeyEventArgs e)//תקינות קלט ת"ז
+        private void C_Id_txt_KeyDown(object sender, KeyEventArgs e)//check id input
         {
             if (e.KeyCode < Keys.D0 || e.KeyCode > Keys.D9)
             {
@@ -1006,7 +1029,7 @@ namespace project
                 ok_c = true;
         }
 
-        private void C_PN_txt_TextChanged(object sender, EventArgs e)//תקינות אורך מספר פלאפון
+        private void C_PN_txt_TextChanged(object sender, EventArgs e)//check length phone number
         {
             if (C_PN_txt.TextLength < 10)
             {
@@ -1020,7 +1043,7 @@ namespace project
             }
         }
 
-        private void C_PN_txt_KeyDown(object sender, KeyEventArgs e)//תקינות קלט מספר פלאפון
+        private void C_PN_txt_KeyDown(object sender, KeyEventArgs e)//check input phone number
         {
             if (e.KeyCode < Keys.D0 || e.KeyCode > Keys.D9)
             {
@@ -1039,12 +1062,12 @@ namespace project
                 ok_c = true;
         }
 
-        private void server_FormClosing(object sender, FormClosingEventArgs e)//כיבוי שרת
+        private void server_FormClosing(object sender, FormClosingEventArgs e)//close server
         {
             Environment.Exit(Environment.ExitCode);
         }
 
-        private void Pharmacist_IdNumber_TextChanged(object sender, EventArgs e)//תקינות אורך מספר זיהוי
+        private void Pharmacist_IdNumber_TextChanged(object sender, EventArgs e)//check length pharmacist id
         {
             if (Pharmacist_IdNumber.TextLength < 6)
             {
@@ -1058,9 +1081,9 @@ namespace project
             }
         }
 
-        private void Update_p_id_txt_TextChanged(object sender, EventArgs e)//התראה על ארוך מספר הזיהוי של הרוקח
+        private void Update_p_id_txt_TextChanged(object sender, EventArgs e)//errorProvider on pharmacist id length in update
         {
-            if (Pharmacist_IdNumber.TextLength < 6)
+            if (Pharmacist_IdNumber.TextLength <6)
             {
                 errorProvider_P_Id.SetError(Update_p_id_txt, "6 ספרות בלבד");
                 
@@ -1072,7 +1095,7 @@ namespace project
             }
         }
 
-        private void Pharmacist_IdNumber_KeyDown(object sender, KeyEventArgs e)//בדיקת קלט מספר זיהוי בהוספת רוקח
+        private void Pharmacist_IdNumber_KeyDown(object sender, KeyEventArgs e)//check input id in adding pharmacist
         {
             if (e.KeyCode < Keys.D0 || e.KeyCode > Keys.D9)
             {
@@ -1088,9 +1111,9 @@ namespace project
             }
         }
 
-        private void Update_c_id_txt_TextChanged(object sender, EventArgs e)//התראה אל תקינות ת"ז בעדכון פרטי לקוח
+        private void Update_c_id_txt_TextChanged(object sender, EventArgs e)//errorProvider on client id length in update
         {
-            if (Pharmacist_IdNumber.TextLength < 6)
+            if (Pharmacist_IdNumber.TextLength < 9)
             {
                 errorProvider_update_c.SetError(Update_c_id_txt, "9 ספרות בלבד");
 
@@ -1102,7 +1125,7 @@ namespace project
             }
         }
 
-        private void Update_p_id_txt_KeyDown(object sender, KeyEventArgs e)//בדיקת קלט מספר זיהוי רוקח לעדכון פרטים
+        private void Update_p_id_txt_KeyDown(object sender, KeyEventArgs e)//check pharmacist input id in update
         {
             if (e.KeyCode < Keys.D0 || e.KeyCode > Keys.D9)
             {
@@ -1118,7 +1141,7 @@ namespace project
             }
         }
 
-        private void Update_c_id_txt_KeyDown(object sender, KeyEventArgs e)//בדיקת קלט ת"ז לקוח לעדכון פרטים
+        private void Update_c_id_txt_KeyDown(object sender, KeyEventArgs e)//check client input id in update
         {
             if (e.KeyCode < Keys.D0 || e.KeyCode > Keys.D9)
             {
@@ -1134,7 +1157,7 @@ namespace project
             }
         }
 
-        private void Id_pharmacist_text_KeyDown(object sender, KeyEventArgs e)//בדיקצ קלט מספר זיהוי רוקח למחיקה
+        private void Id_pharmacist_text_KeyDown(object sender, KeyEventArgs e)//check pharmacist input id for delete
         {
             if (e.KeyCode < Keys.D0 || e.KeyCode > Keys.D9)
             {
@@ -1150,7 +1173,7 @@ namespace project
             }
         }
 
-        private void client_delete_text_KeyDown(object sender, KeyEventArgs e)//בדיקת קלט ת"ז לקוח למחיקה
+        private void client_delete_text_KeyDown(object sender, KeyEventArgs e)////check client input id for delete
         {
             if (e.KeyCode < Keys.D0 || e.KeyCode > Keys.D9)
             {
@@ -1166,7 +1189,7 @@ namespace project
             }
         }
 
-        private void Id_pharmacist_text_TextChanged(object sender, EventArgs e)//תקינות אורך מסםר זיהוי רוקח במחיקה
+        private void Id_pharmacist_text_TextChanged(object sender, EventArgs e)//check pharmacist id length for delete
         {
             if (Id_pharmacist_text.TextLength < 6)
             {
@@ -1180,7 +1203,7 @@ namespace project
             }
         }
 
-        private void client_delete_text_TextChanged(object sender, EventArgs e)//תקינות אורך ת"ז לקוח במחיקה
+        private void client_delete_text_TextChanged(object sender, EventArgs e)//check client id length for delete
         {
             if (client_delete_text.TextLength < 9)
             {

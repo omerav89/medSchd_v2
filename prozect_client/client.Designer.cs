@@ -68,6 +68,8 @@
             this.change_p_btn = new System.Windows.Forms.Button();
             this.Client_Label = new System.Windows.Forms.Label();
             this.NumOfDays_txt = new System.Windows.Forms.TextBox();
+            this.timer_ComboMed = new System.Windows.Forms.Timer(this.components);
+            this.refresh_combo_med = new System.Windows.Forms.Button();
             this.paneldays.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_trofot)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorId)).BeginInit();
@@ -177,7 +179,7 @@
             // comboMed
             // 
             this.comboMed.FormattingEnabled = true;
-            this.comboMed.Location = new System.Drawing.Point(268, 32);
+            this.comboMed.Location = new System.Drawing.Point(274, 35);
             this.comboMed.Name = "comboMed";
             this.comboMed.Size = new System.Drawing.Size(121, 21);
             this.comboMed.Sorted = true;
@@ -186,7 +188,7 @@
             // Med
             // 
             this.Med.AutoSize = true;
-            this.Med.Location = new System.Drawing.Point(395, 35);
+            this.Med.Location = new System.Drawing.Point(401, 38);
             this.Med.Name = "Med";
             this.Med.Size = new System.Drawing.Size(39, 13);
             this.Med.TabIndex = 0;
@@ -196,7 +198,7 @@
             // 
             this.MedAmount.AutoSize = true;
             this.MedAmount.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
-            this.MedAmount.Location = new System.Drawing.Point(282, 71);
+            this.MedAmount.Location = new System.Drawing.Point(282, 83);
             this.MedAmount.Name = "MedAmount";
             this.MedAmount.Size = new System.Drawing.Size(103, 17);
             this.MedAmount.TabIndex = 0;
@@ -269,7 +271,7 @@
             this.paneldays.Controls.Add(this.Night);
             this.paneldays.Controls.Add(this.Noon);
             this.paneldays.Controls.Add(this.Morning);
-            this.paneldays.Location = new System.Drawing.Point(250, 96);
+            this.paneldays.Location = new System.Drawing.Point(250, 108);
             this.paneldays.Name = "paneldays";
             this.paneldays.Size = new System.Drawing.Size(173, 50);
             this.paneldays.TabIndex = 49;
@@ -439,12 +441,28 @@
             this.NumOfDays_txt.TabIndex = 63;
             this.NumOfDays_txt.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NumOfDays_txt_KeyDown);
             // 
+            // timer_ComboMed
+            // 
+            this.timer_ComboMed.Interval = 3600000;
+            this.timer_ComboMed.Tick += new System.EventHandler(this.timer_ComboMed_Tick);
+            // 
+            // refresh_combo_med
+            // 
+            this.refresh_combo_med.Location = new System.Drawing.Point(12, 286);
+            this.refresh_combo_med.Name = "refresh_combo_med";
+            this.refresh_combo_med.Size = new System.Drawing.Size(90, 26);
+            this.refresh_combo_med.TabIndex = 72;
+            this.refresh_combo_med.Text = "רענן תרופות";
+            this.refresh_combo_med.UseVisualStyleBackColor = true;
+            this.refresh_combo_med.Click += new System.EventHandler(this.refresh_combo_med_Click);
+            // 
             // client
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Highlight;
             this.ClientSize = new System.Drawing.Size(743, 324);
+            this.Controls.Add(this.refresh_combo_med);
             this.Controls.Add(this.NumOfDays_txt);
             this.Controls.Add(this.Client_Label);
             this.Controls.Add(this.change_p_btn);
@@ -529,6 +547,8 @@
         public System.Windows.Forms.Button change_p_btn;
         public System.Windows.Forms.TextBox NumOfDays_txt;
         private System.Windows.Forms.Label Client_Label;
+        private System.Windows.Forms.Timer timer_ComboMed;
+        private System.Windows.Forms.Button refresh_combo_med;
     }
 }
 

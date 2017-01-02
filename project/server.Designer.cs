@@ -444,11 +444,11 @@
             // L_P_id
             // 
             this.L_P_id.AutoSize = true;
-            this.L_P_id.Location = new System.Drawing.Point(94, 7);
+            this.L_P_id.Location = new System.Drawing.Point(55, 3);
             this.L_P_id.Name = "L_P_id";
-            this.L_P_id.Size = new System.Drawing.Size(24, 13);
+            this.L_P_id.Size = new System.Drawing.Size(64, 13);
             this.L_P_id.TabIndex = 42;
-            this.L_P_id.Text = "ת\"ז";
+            this.L_P_id.Text = "מספר זיהוי";
             // 
             // Pharmacist_IdNumber
             // 
