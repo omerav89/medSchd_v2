@@ -109,6 +109,23 @@
             this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
             this.errorProvider_id_c_delete = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorProvider_id_p_delete = new System.Windows.Forms.ErrorProvider(this.components);
+            this.report_export = new System.Windows.Forms.Button();
+            this.report_client = new System.Windows.Forms.Button();
+            this.report_med = new System.Windows.Forms.Button();
+            this.report_pharmacist = new System.Windows.Forms.Button();
+            this.panel_report = new System.Windows.Forms.Panel();
+            this.report_CBP = new System.Windows.Forms.Button();
+            this.report_CP = new System.Windows.Forms.Button();
+            this.report_Mamount = new System.Windows.Forms.Button();
+            this.text_CP_report = new System.Windows.Forms.TextBox();
+            this.report_CP_okbtn = new System.Windows.Forms.Button();
+            this.panel_report_CP = new System.Windows.Forms.Panel();
+            this.text_report_med = new System.Windows.Forms.TextBox();
+            this.report_MA_okbtn = new System.Windows.Forms.Button();
+            this.panel_report_MA = new System.Windows.Forms.Panel();
+            this.text_report_CBP = new System.Windows.Forms.TextBox();
+            this.report_CBP_okbtn = new System.Windows.Forms.Button();
+            this.panel_report_CBP = new System.Windows.Forms.Panel();
             this.panel_Medicine.SuspendLayout();
             this.panel_Pharmacist.SuspendLayout();
             this.panel_delete_medicine.SuspendLayout();
@@ -124,11 +141,15 @@
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_update_c)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_id_c_delete)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_id_p_delete)).BeginInit();
+            this.panel_report.SuspendLayout();
+            this.panel_report_CP.SuspendLayout();
+            this.panel_report_MA.SuspendLayout();
+            this.panel_report_CBP.SuspendLayout();
             this.SuspendLayout();
             // 
             // cancelListen
             // 
-            this.cancelListen.Location = new System.Drawing.Point(286, 561);
+            this.cancelListen.Location = new System.Drawing.Point(366, 585);
             this.cancelListen.Name = "cancelListen";
             this.cancelListen.Size = new System.Drawing.Size(88, 34);
             this.cancelListen.TabIndex = 1;
@@ -140,7 +161,7 @@
             // Llisten
             // 
             this.Llisten.AutoSize = true;
-            this.Llisten.Location = new System.Drawing.Point(346, 598);
+            this.Llisten.Location = new System.Drawing.Point(426, 622);
             this.Llisten.Name = "Llisten";
             this.Llisten.Size = new System.Drawing.Size(46, 13);
             this.Llisten.TabIndex = 2;
@@ -304,9 +325,9 @@
             // 
             // Delete_Pharmacist_Medicine
             // 
-            this.Delete_Pharmacist_Medicine.Location = new System.Drawing.Point(141, 9);
+            this.Delete_Pharmacist_Medicine.Location = new System.Drawing.Point(127, 9);
             this.Delete_Pharmacist_Medicine.Name = "Delete_Pharmacist_Medicine";
-            this.Delete_Pharmacist_Medicine.Size = new System.Drawing.Size(153, 23);
+            this.Delete_Pharmacist_Medicine.Size = new System.Drawing.Size(167, 24);
             this.Delete_Pharmacist_Medicine.TabIndex = 21;
             this.Delete_Pharmacist_Medicine.Text = "מחק תרופה / רוקח / לקוח";
             this.Delete_Pharmacist_Medicine.UseVisualStyleBackColor = true;
@@ -829,9 +850,9 @@
             // 
             // Update_btn
             // 
-            this.Update_btn.Location = new System.Drawing.Point(641, 318);
+            this.Update_btn.Location = new System.Drawing.Point(645, 322);
             this.Update_btn.Name = "Update_btn";
-            this.Update_btn.Size = new System.Drawing.Size(178, 26);
+            this.Update_btn.Size = new System.Drawing.Size(178, 22);
             this.Update_btn.TabIndex = 46;
             this.Update_btn.Text = "עדכון פרטים";
             this.Update_btn.UseVisualStyleBackColor = true;
@@ -869,7 +890,7 @@
             // 
             // startListen
             // 
-            this.startListen.Location = new System.Drawing.Point(380, 562);
+            this.startListen.Location = new System.Drawing.Point(460, 586);
             this.startListen.Name = "startListen";
             this.startListen.Size = new System.Drawing.Size(88, 33);
             this.startListen.TabIndex = 0;
@@ -884,12 +905,187 @@
             // 
             this.errorProvider_id_p_delete.ContainerControl = this;
             // 
+            // report_export
+            // 
+            this.report_export.Location = new System.Drawing.Point(143, 322);
+            this.report_export.Name = "report_export";
+            this.report_export.Size = new System.Drawing.Size(178, 22);
+            this.report_export.TabIndex = 48;
+            this.report_export.Text = "יצוא דוחות לאקסל";
+            this.report_export.UseVisualStyleBackColor = true;
+            this.report_export.Click += new System.EventHandler(this.report_export_Click);
+            // 
+            // report_client
+            // 
+            this.report_client.Location = new System.Drawing.Point(283, 139);
+            this.report_client.Name = "report_client";
+            this.report_client.Size = new System.Drawing.Size(75, 34);
+            this.report_client.TabIndex = 49;
+            this.report_client.Text = " לקוחות";
+            this.report_client.UseVisualStyleBackColor = true;
+            this.report_client.Click += new System.EventHandler(this.report_client_Click);
+            // 
+            // report_med
+            // 
+            this.report_med.Location = new System.Drawing.Point(134, 139);
+            this.report_med.Name = "report_med";
+            this.report_med.Size = new System.Drawing.Size(75, 34);
+            this.report_med.TabIndex = 50;
+            this.report_med.Text = "תרופות";
+            this.report_med.UseVisualStyleBackColor = true;
+            this.report_med.Click += new System.EventHandler(this.report_med_Click);
+            // 
+            // report_pharmacist
+            // 
+            this.report_pharmacist.Location = new System.Drawing.Point(0, 139);
+            this.report_pharmacist.Name = "report_pharmacist";
+            this.report_pharmacist.Size = new System.Drawing.Size(75, 34);
+            this.report_pharmacist.TabIndex = 51;
+            this.report_pharmacist.Text = "רוקחים";
+            this.report_pharmacist.UseVisualStyleBackColor = true;
+            this.report_pharmacist.Click += new System.EventHandler(this.report_pharmacist_Click);
+            // 
+            // panel_report
+            // 
+            this.panel_report.Controls.Add(this.panel_report_CBP);
+            this.panel_report.Controls.Add(this.panel_report_MA);
+            this.panel_report.Controls.Add(this.panel_report_CP);
+            this.panel_report.Controls.Add(this.report_Mamount);
+            this.panel_report.Controls.Add(this.report_CP);
+            this.panel_report.Controls.Add(this.report_CBP);
+            this.panel_report.Controls.Add(this.report_pharmacist);
+            this.panel_report.Controls.Add(this.report_med);
+            this.panel_report.Controls.Add(this.report_client);
+            this.panel_report.Location = new System.Drawing.Point(18, 349);
+            this.panel_report.Name = "panel_report";
+            this.panel_report.Size = new System.Drawing.Size(401, 206);
+            this.panel_report.TabIndex = 52;
+            this.panel_report.Visible = false;
+            // 
+            // report_CBP
+            // 
+            this.report_CBP.Location = new System.Drawing.Point(3, 8);
+            this.report_CBP.Name = "report_CBP";
+            this.report_CBP.Size = new System.Drawing.Size(75, 34);
+            this.report_CBP.TabIndex = 52;
+            this.report_CBP.Text = "לקוחות לפי מס\' רוקח";
+            this.report_CBP.UseVisualStyleBackColor = true;
+            this.report_CBP.Click += new System.EventHandler(this.report_CBP_Click);
+            // 
+            // report_CP
+            // 
+            this.report_CP.Location = new System.Drawing.Point(284, 8);
+            this.report_CP.Name = "report_CP";
+            this.report_CP.Size = new System.Drawing.Size(75, 34);
+            this.report_CP.TabIndex = 53;
+            this.report_CP.Text = "לקוח ומרשמים";
+            this.report_CP.UseVisualStyleBackColor = true;
+            this.report_CP.Click += new System.EventHandler(this.report_CP_Click);
+            // 
+            // report_Mamount
+            // 
+            this.report_Mamount.Location = new System.Drawing.Point(135, 8);
+            this.report_Mamount.Name = "report_Mamount";
+            this.report_Mamount.Size = new System.Drawing.Size(75, 34);
+            this.report_Mamount.TabIndex = 54;
+            this.report_Mamount.Text = "מכירת תרופות";
+            this.report_Mamount.UseVisualStyleBackColor = true;
+            this.report_Mamount.Click += new System.EventHandler(this.report_Mamount_Click);
+            // 
+            // text_CP_report
+            // 
+            this.text_CP_report.Location = new System.Drawing.Point(0, 4);
+            this.text_CP_report.MaxLength = 9;
+            this.text_CP_report.Name = "text_CP_report";
+            this.text_CP_report.Size = new System.Drawing.Size(74, 20);
+            this.text_CP_report.TabIndex = 55;
+            this.text_CP_report.KeyDown += new System.Windows.Forms.KeyEventHandler(this.text_CP_report_KeyDown);
+            // 
+            // report_CP_okbtn
+            // 
+            this.report_CP_okbtn.Location = new System.Drawing.Point(12, 30);
+            this.report_CP_okbtn.Name = "report_CP_okbtn";
+            this.report_CP_okbtn.Size = new System.Drawing.Size(49, 27);
+            this.report_CP_okbtn.TabIndex = 56;
+            this.report_CP_okbtn.Text = "אישור";
+            this.report_CP_okbtn.UseVisualStyleBackColor = true;
+            this.report_CP_okbtn.Click += new System.EventHandler(this.report_CP_okbtn_Click);
+            // 
+            // panel_report_CP
+            // 
+            this.panel_report_CP.Controls.Add(this.report_CP_okbtn);
+            this.panel_report_CP.Controls.Add(this.text_CP_report);
+            this.panel_report_CP.Location = new System.Drawing.Point(284, 44);
+            this.panel_report_CP.Name = "panel_report_CP";
+            this.panel_report_CP.Size = new System.Drawing.Size(87, 66);
+            this.panel_report_CP.TabIndex = 57;
+            this.panel_report_CP.Visible = false;
+            // 
+            // text_report_med
+            // 
+            this.text_report_med.Location = new System.Drawing.Point(10, 2);
+            this.text_report_med.MaxLength = 9;
+            this.text_report_med.Name = "text_report_med";
+            this.text_report_med.Size = new System.Drawing.Size(74, 20);
+            this.text_report_med.TabIndex = 57;
+            // 
+            // report_MA_okbtn
+            // 
+            this.report_MA_okbtn.Location = new System.Drawing.Point(24, 28);
+            this.report_MA_okbtn.Name = "report_MA_okbtn";
+            this.report_MA_okbtn.Size = new System.Drawing.Size(49, 27);
+            this.report_MA_okbtn.TabIndex = 57;
+            this.report_MA_okbtn.Text = "אישור";
+            this.report_MA_okbtn.UseVisualStyleBackColor = true;
+            this.report_MA_okbtn.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // panel_report_MA
+            // 
+            this.panel_report_MA.Controls.Add(this.report_MA_okbtn);
+            this.panel_report_MA.Controls.Add(this.text_report_med);
+            this.panel_report_MA.Location = new System.Drawing.Point(125, 46);
+            this.panel_report_MA.Name = "panel_report_MA";
+            this.panel_report_MA.Size = new System.Drawing.Size(90, 64);
+            this.panel_report_MA.TabIndex = 58;
+            this.panel_report_MA.Visible = false;
+            // 
+            // text_report_CBP
+            // 
+            this.text_report_CBP.Location = new System.Drawing.Point(0, 4);
+            this.text_report_CBP.MaxLength = 6;
+            this.text_report_CBP.Name = "text_report_CBP";
+            this.text_report_CBP.Size = new System.Drawing.Size(74, 20);
+            this.text_report_CBP.TabIndex = 58;
+            this.text_report_CBP.KeyDown += new System.Windows.Forms.KeyEventHandler(this.text_report_CBP_KeyDown);
+            // 
+            // report_CBP_okbtn
+            // 
+            this.report_CBP_okbtn.Location = new System.Drawing.Point(7, 30);
+            this.report_CBP_okbtn.Name = "report_CBP_okbtn";
+            this.report_CBP_okbtn.Size = new System.Drawing.Size(49, 27);
+            this.report_CBP_okbtn.TabIndex = 58;
+            this.report_CBP_okbtn.Text = "אישור";
+            this.report_CBP_okbtn.UseVisualStyleBackColor = true;
+            this.report_CBP_okbtn.Click += new System.EventHandler(this.report_CBP_okbtn_Click);
+            // 
+            // panel_report_CBP
+            // 
+            this.panel_report_CBP.Controls.Add(this.report_CBP_okbtn);
+            this.panel_report_CBP.Controls.Add(this.text_report_CBP);
+            this.panel_report_CBP.Location = new System.Drawing.Point(3, 44);
+            this.panel_report_CBP.Name = "panel_report_CBP";
+            this.panel_report_CBP.Size = new System.Drawing.Size(78, 61);
+            this.panel_report_CBP.TabIndex = 59;
+            this.panel_report_CBP.Visible = false;
+            // 
             // server
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.ClientSize = new System.Drawing.Size(913, 617);
+            this.ClientSize = new System.Drawing.Size(921, 636);
+            this.Controls.Add(this.panel_report);
+            this.Controls.Add(this.report_export);
             this.Controls.Add(this.Cancel_update_btn);
             this.Controls.Add(this.Update_btn);
             this.Controls.Add(this.panel_update_p);
@@ -942,6 +1138,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_update_c)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_id_c_delete)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_id_p_delete)).EndInit();
+            this.panel_report.ResumeLayout(false);
+            this.panel_report_CP.ResumeLayout(false);
+            this.panel_report_CP.PerformLayout();
+            this.panel_report_MA.ResumeLayout(false);
+            this.panel_report_MA.PerformLayout();
+            this.panel_report_CBP.ResumeLayout(false);
+            this.panel_report_CBP.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1028,6 +1231,23 @@
         private System.DirectoryServices.DirectoryEntry directoryEntry1;
         private System.Windows.Forms.ErrorProvider errorProvider_id_c_delete;
         private System.Windows.Forms.ErrorProvider errorProvider_id_p_delete;
+        private System.Windows.Forms.Panel panel_report;
+        private System.Windows.Forms.Button report_pharmacist;
+        private System.Windows.Forms.Button report_med;
+        private System.Windows.Forms.Button report_client;
+        private System.Windows.Forms.Button report_export;
+        private System.Windows.Forms.Button report_Mamount;
+        private System.Windows.Forms.Button report_CP;
+        private System.Windows.Forms.Button report_CBP;
+        private System.Windows.Forms.Panel panel_report_CP;
+        private System.Windows.Forms.Button report_CP_okbtn;
+        private System.Windows.Forms.TextBox text_CP_report;
+        private System.Windows.Forms.Button report_MA_okbtn;
+        private System.Windows.Forms.TextBox text_report_med;
+        private System.Windows.Forms.Panel panel_report_MA;
+        private System.Windows.Forms.Button report_CBP_okbtn;
+        private System.Windows.Forms.TextBox text_report_CBP;
+        private System.Windows.Forms.Panel panel_report_CBP;
     }
 }
 

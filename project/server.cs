@@ -15,6 +15,8 @@ using System.Threading;
 using Newtonsoft.Json;
 using Common;
 using System.Text.RegularExpressions;
+using Microsoft.Office.Interop.Excel;
+using Microsoft.VisualBasic;
 
 namespace project
 {
@@ -29,8 +31,6 @@ namespace project
         private string medSchd_json;
         SqlDataReader reader;
         private bool ok_c = false;
-
-
 
         public server()
         {
@@ -112,11 +112,13 @@ namespace project
             NetworkStream stream = client.GetStream();
             BinaryReader reader = new BinaryReader(stream);
             BinaryWriter writer = new BinaryWriter(stream);
-            writer.Write("Starting Loop");
+            StreamReader st = new StreamReader(stream);
+
             while (client.Connected)
             {
-
+                MessageBox.Show("connect");
                 str = reader.ReadString();
+                MessageBox.Show(str);
 
                 if (str == "EXIT")
                 {
@@ -127,11 +129,15 @@ namespace project
                     medSchd_json = reader.ReadString();
                     medSchd = JsonConvert.DeserializeObject<MedSchd>(medSchd_json);
                     initConnection();
-                    ClientUpdate up = new ClientUpdate();
-                    up.Amount = 10;
-                    up.MedType = "Advil";
-                    for (int i = 0; i < 10; i++)
-                        writer.Write("TESTING: " + i);
+                    //ClientUpdate up = new ClientUpdate();
+                    //up.Amount = 10;
+                    //up.MedType = "Advil";
+                    //for (int i = 0; i < 10; i++)
+                    //    writer.Write("TESTING: " + i);
+
+                    //writer.Write(android_json);
+
+
                 }
                 else if (str == "clientId")
                 {
@@ -239,16 +245,46 @@ namespace project
                 {
                     str = reader.ReadString();
                     DataSet ds_Android = new DataSet();
-                    SqlDataAdapter da_android = new SqlDataAdapter("select IdClient,IdMed,AmountMorning, AmountNoon,AmountNight,StartTaking,NumOfDays FROM Prescription", connection);
+                    SqlDataAdapter da_android = new SqlDataAdapter("select IdClient,IdMed,AmountMorning, AmountNoon,AmountNight,StartTaking,NumOfDays FROM Prescription,SentToClient", connection);
                     da_android.Fill(ds_Android, "Prescription");
                     DataRow[] arr_p = ds_Android.Tables["Prescription"].Select("IdClient =" + str);
+                    string str2 = DateTime.Now.ToShortTimeString();
+                    foreach (DataRow dr in arr_p)
+                    {
+                        if (dr["StartTaking"].Equals(str2))
+                        {
+                            JasonToAndroid JTA = new JasonToAndroid();
+                            JTA.name = dr["IdMed"].ToString();
+                            JTA.amount_morning = (int)dr["AmountMorning"];
+                            JTA.amount_noon = (int)dr["AmountNoon"];
+                            JTA.amount_night = (int)dr["AmountNight"];
+                            JTA.num_of_days = (int)dr["NumOfDays"];
+                            string android_json = JsonConvert.SerializeObject(JTA);
+
+                            writer.Write(android_json);
+                        }
+                        else if ((int)dr["NumOfDays"] > 0)
+                        {
+                            JasonToAndroid JTA = new JasonToAndroid();
+                            JTA.name = dr["IdMed"].ToString();
+                            JTA.amount_morning = (int)dr["AmountMorning"];
+                            JTA.amount_noon = (int)dr["AmountNoon"];
+                            JTA.amount_night = (int)dr["AmountNight"];
+                            JTA.num_of_days = (int)dr["NumOfDays"] - 1;
+                            string android_json = JsonConvert.SerializeObject(JTA);
+
+                            writer.Write(android_json);
+                            dr["NumOfDays"] = (int)dr["NumOfDays"] - 1;
+                            da_android.Update(ds_Android);
+                        }
+                    }
 
                 }
             }
-    }
+        }
 
 
-    private void cancelListen_Click(object sender, EventArgs e)//close server
+        private void cancelListen_Click(object sender, EventArgs e)//close server
         {
             keepListening = false;
             Environment.Exit(Environment.ExitCode);
@@ -320,7 +356,9 @@ namespace project
                 dataAdapter_Prescription.Update(dataSet, "Prescription");
                 MessageBox.Show("המרשם צורף");
 
-                
+
+
+
 
             }
             catch (SqlException ex)
@@ -338,11 +376,11 @@ namespace project
         public void AddPharmacist_Click_1(object sender, EventArgs e)//add pharmacist to db
         {
             bool good = true;
-            if(!Regex.Match(Pharmacist_FName.Text, @"^[א-ת]+|([א-ת]+\s[א-ת]+)$").Success)
+            if (!Regex.Match(Pharmacist_FName.Text, @"^[א-ת]+|([א-ת]+\s[א-ת]+)$").Success)
             {
                 good = false;
             }
-            if(!good || !Regex.Match(Pharmacist_LName.Text, @"^[א-ת]+|([א-ת]+\s[א-ת]+)$").Success)
+            if (!good || !Regex.Match(Pharmacist_LName.Text, @"^[א-ת]+|([א-ת]+\s[א-ת]+)$").Success)
             {
                 good = false;
             }
@@ -396,6 +434,7 @@ namespace project
         }
         public void AddMedicine_Click(object sender, EventArgs e)//add medicine to db
         {
+
             bool good = true;
             if (!Regex.Match(GenericName_Text.Text, @"^[a-zA-Z]*$").Success)
             {
@@ -409,11 +448,11 @@ namespace project
             {
                 good = false;
             }
-            if(comboTakeOption.SelectedIndex==-1)
+            if (comboTakeOption.SelectedIndex == -1)
             {
                 good = false;
             }
-            if (!good )
+            if (!good)
             {
                 MessageBox.Show("עלייך לבדוק את המידע שהכנסת ולנסות שנית\n שים לב כי על השם הגנרי להיות באנגלית");
             }
@@ -441,6 +480,8 @@ namespace project
                     Add_Medicine_or_Pharmacist.Visible = true;
                     cancel.Visible = false;
                     OpenMedicine.Visible = false;
+
+
                 }
                 catch (SqlException ex)
                 {
@@ -461,7 +502,7 @@ namespace project
             {
                 good = false;
             }
-            if (!good||C_Id_txt.TextLength < 9 || C_PN_txt.TextLength < 10)
+            if (!good || C_Id_txt.TextLength < 9 || C_PN_txt.TextLength < 10)
             {
                 MessageBox.Show("בדוק היטב את המידע שהכנסת ונסה שנית");
             }
@@ -821,7 +862,7 @@ namespace project
             {
                 good = false;
             }
-            if (!good && !radioBtn_p_FN.Checked && !radioBtn_p_LN.Checked )
+            if (!good && !radioBtn_p_FN.Checked && !radioBtn_p_LN.Checked)
             {
                 good = false;
             }
@@ -1072,26 +1113,26 @@ namespace project
             if (Pharmacist_IdNumber.TextLength < 6)
             {
                 errorProvider_P_Id.SetError(L_P_id, "6 ספרות בלבד");
-                
+
             }
             else
             {
                 errorProvider_P_Id.SetError(L_P_id, "");
-                
+
             }
         }
 
         private void Update_p_id_txt_TextChanged(object sender, EventArgs e)//errorProvider on pharmacist id length in update
         {
-            if (Pharmacist_IdNumber.TextLength <6)
+            if (Pharmacist_IdNumber.TextLength < 6)
             {
                 errorProvider_P_Id.SetError(Update_p_id_txt, "6 ספרות בלבד");
-                
+
             }
             else
             {
                 errorProvider_P_Id.SetError(Update_p_id_txt, "");
-                
+
             }
         }
 
@@ -1214,6 +1255,323 @@ namespace project
             {
                 errorProvider_id_c_delete.SetError(client_delete_text, "");
                 ok_c = true;
+            }
+        }
+
+        private void report_export_Click(object sender, EventArgs e)
+        {
+            panel_report.Visible = !(panel_report.Visible);
+            panel_report_CBP.Visible = false;
+            panel_report_CP.Visible = false;
+            panel_report_MA.Visible = false;
+        }
+
+        private void report_client_Click(object sender, EventArgs e)//report client list
+        {
+            Microsoft.Office.Interop.Excel.Application exl = new Microsoft.Office.Interop.Excel.Application();
+            Workbook wb = exl.Workbooks.Add(XlSheetType.xlWorksheet);
+            Worksheet ws = (Worksheet)exl.ActiveSheet;
+
+            exl.Visible = true;
+
+            ws.Cells[1, 1] = "מספר תעודת זהות";
+            ws.Cells[1, 2] = "שם פרטי";
+            ws.Cells[1, 3] = "שם משפחה";
+            ws.Cells[1, 4] = "מספר טלפון";
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM Client", connection);
+            da.Fill(ds, "Client");
+
+            int r = 2;
+            int c = 1;
+            foreach (DataRow dr in ds.Tables["client"].Rows)
+            {
+                ws.Cells[r, c++] = dr["IdNumber"].ToString();
+                ws.Cells[r, c++] = dr["FirstName"].ToString();
+                ws.Cells[r, c++] = dr["LastName"].ToString();
+                ws.Cells[r++, c] = dr["PhoneNumber"].ToString();
+                c = 1;
+            }
+
+        }
+
+        private void report_pharmacist_Click(object sender, EventArgs e)//report of pharmacist list
+        {
+            Microsoft.Office.Interop.Excel.Application exl = new Microsoft.Office.Interop.Excel.Application();
+            Workbook wb = exl.Workbooks.Add(XlSheetType.xlWorksheet);
+            Worksheet ws = (Worksheet)exl.ActiveSheet;
+
+            exl.Visible = true;
+
+            ws.Cells[1, 1] = "מספר עובד";
+            ws.Cells[1, 2] = "שם פרטי";
+            ws.Cells[1, 3] = "שם משפחה";
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM Pharmacist", connection);
+            da.Fill(ds, "Pharmacist");
+
+            int r = 2;
+            int c = 1;
+            foreach (DataRow dr in ds.Tables["Pharmacist"].Rows)
+            {
+                ws.Cells[r, c++] = dr["IdNumber"].ToString();
+                ws.Cells[r, c++] = dr["FirstName"].ToString();
+                ws.Cells[r++, c] = dr["LastName"].ToString();
+                c = 1;
+            }
+        }
+
+        private void report_med_Click(object sender, EventArgs e)//report of med list
+        {
+
+            Microsoft.Office.Interop.Excel.Application exl = new Microsoft.Office.Interop.Excel.Application();
+            Workbook wb = exl.Workbooks.Add(XlSheetType.xlWorksheet);
+            Worksheet ws = (Worksheet)exl.ActiveSheet;
+
+            exl.Visible = true;
+
+            ws.Cells[1, 1] = "שם מותג";
+            ws.Cells[1, 2] = "שם גנרי";
+            ws.Cells[1, 3] = "סוג תרופה";
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM Medicine", connection);
+            da.Fill(ds, "Medicine");
+
+            int r = 2;
+            int c = 1;
+            foreach (DataRow dr in ds.Tables["Medicine"].Rows)
+            {
+                ws.Cells[r, c++] = dr["BrandName"].ToString();
+                ws.Cells[r, c++] = dr["GenericName"].ToString();
+                ws.Cells[r++, c] = dr["MedType"].ToString();
+                c = 1;
+            }
+        }
+
+        private void report_CP_Click(object sender, EventArgs e)//prescription report by client id
+        {
+            panel_report_CP.Visible = !(panel_report_CP.Visible);
+        }
+
+        private void report_CP_okbtn_Click(object sender, EventArgs e)
+        {
+            if (text_CP_report.TextLength == 9)
+            {
+                string str_id = text_CP_report.Text;
+                bool found = false;
+                DataSet ds_client_update = new DataSet();
+                SqlDataAdapter da_client_update = new SqlDataAdapter("SELECT * FROM client", connection);
+                da_client_update.Fill(ds_client_update, "client");
+                DataRow[] arr_c = ds_client_update.Tables["client"].Select("IdNumber =" + str_id);
+
+                foreach (DataRow dr in arr_c)
+                {
+                    found = true;
+
+                }
+                if (!found)
+                {
+                    MessageBox.Show("הלקוח אינו קיים במערכת");
+                    text_CP_report.Text = "";
+                }
+                else
+                {
+                    Microsoft.Office.Interop.Excel.Application exl = new Microsoft.Office.Interop.Excel.Application();
+                    Workbook wb = exl.Workbooks.Add(XlSheetType.xlWorksheet);
+                    Worksheet ws = (Worksheet)exl.ActiveSheet;
+
+                    exl.Visible = true;
+
+                    ws.Cells[1, 1] = "תאריך קבלת מרשם";
+                    ws.Cells[1, 2] = "מס' רוקח מטפל";
+                    ws.Cells[1, 3] = "שם התרופה";
+                    ws.Cells[1, 4] = "מס' כדורים בוקר";
+                    ws.Cells[1, 5] = "מספר כדורים צהריים";
+                    ws.Cells[1, 6] = "מספר כדורים ערב";
+                    ws.Cells[1, 7] = "זמן המרשם בימים";
+
+
+
+                    DataSet ds = new DataSet();
+                    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM Prescription", connection);
+                    da.Fill(ds, "Prescription");
+                    DataRow[] arr_P = ds.Tables["Prescription"].Select("IdClient =" + text_CP_report.Text);
+
+
+                    int r = 2;
+                    int c = 1;
+                    foreach (DataRow dr in arr_P)
+                    {
+                        ws.Cells[r, c++] = dr["StartTaking"].ToString();
+                        ws.Cells[r, c++] = dr["IdPharmacist"].ToString();
+                        ws.Cells[r, c++] = dr["IdMed"].ToString();
+                        ws.Cells[r, c++] = dr["AmountMorning"].ToString();
+                        ws.Cells[r, c++] = dr["AmountNoon"].ToString();
+                        ws.Cells[r, c++] = dr["AmountNight"].ToString();
+                        ws.Cells[r++, c] = dr["NumOfDays"].ToString();
+                        c = 1;
+                    }
+                }
+                text_CP_report.Text = "";
+            }
+            else
+            {
+                MessageBox.Show("חייב להיות מספר בעל 9 ספרות");
+            }
+
+        }
+
+        private void text_CP_report_KeyDown(object sender, KeyEventArgs e)//check client id before report
+        {
+            if (e.KeyCode < Keys.D0 || e.KeyCode > Keys.D9)
+            {
+                if (e.KeyCode < Keys.NumPad0 || e.KeyCode > Keys.NumPad9)
+                {
+                    if (e.KeyCode != Keys.Back)
+                    {
+                        string abc = "ניתן להכניס מספרים בלבד";
+                        DialogResult result1 = MessageBox.Show(abc.ToString(), "Validate numbers", MessageBoxButtons.OK);
+                        text_CP_report.Text = "";
+                    }
+                }
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)//report med amount by brand name
+        {
+            try
+            {
+                string str_med = Medicine_brand_text.Text;
+                DataSet ds = new DataSet();
+                SqlDataAdapter da = new SqlDataAdapter("SELECT IdMed FROM Prescription", connection);
+                da.Fill(ds, "Prescription");
+                DataRow[] arr_M = ds.Tables["Prescription"].Select().Where(brand => ((string)brand[0]).Trim().Equals(text_report_med.Text)).ToArray();
+
+                if (arr_M.Count() == 0)
+                {
+                    MessageBox.Show("התרופה אינה קיימת במערכת\n אנא וודא כי השם נכון");
+                    Medicine_brand_text.Text = "";
+                }
+                else
+                {
+                    Microsoft.Office.Interop.Excel.Application exl = new Microsoft.Office.Interop.Excel.Application();
+                    Workbook wb = exl.Workbooks.Add(XlSheetType.xlWorksheet);
+                    Worksheet ws = (Worksheet)exl.ActiveSheet;
+
+                    exl.Visible = true;
+
+                    ws.Cells[1, 1] = "שם התרופה";
+                    ws.Cells[1, 2] = "כמות";
+
+                    ws.Cells[2, 1] = text_report_med.Text;
+                    ws.Cells[2, 2] = arr_M.Count();
+                }
+                text_report_med.Text = "";
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
+            }
+        }
+
+
+        private void report_Mamount_Click(object sender, EventArgs e)
+        {
+            panel_report_MA.Visible = !(panel_report_MA.Visible);
+        }
+
+        private void text_report_CBP_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode < Keys.D0 || e.KeyCode > Keys.D9)
+            {
+                if (e.KeyCode < Keys.NumPad0 || e.KeyCode > Keys.NumPad9)
+                {
+                    if (e.KeyCode != Keys.Back)
+                    {
+                        string abc = "ניתן להכניס מספרים בלבד";
+                        DialogResult result1 = MessageBox.Show(abc.ToString(), "Validate numbers", MessageBoxButtons.OK);
+                        text_report_CBP.Text = "";
+                    }
+                }
+            }
+        }
+
+        private void report_CBP_Click(object sender, EventArgs e)
+        {
+            panel_report_CBP.Visible = !(panel_report_CBP.Visible);
+        }
+
+        private void report_CBP_okbtn_Click(object sender, EventArgs e)
+        {
+            if (text_report_CBP.TextLength < 6)
+            {
+                MessageBox.Show("חייב להיות מספר בעל 9 ספרות");
+            }
+            else
+            {
+
+                DataSet ds = new DataSet();
+                SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM Prescription", connection);
+                da.Fill(ds, "Prescription");
+                DataRow[] arr = ds.Tables["Prescription"].Select("IdPharmacist =" + text_report_CBP.Text);
+                List<string> id_list = new List<string>();
+
+                foreach (DataRow dr in arr)
+                {
+                    if (id_list.Count == 0)
+                    {
+                        id_list.Add(dr["IdClient"].ToString());
+                    }
+                    else
+                    {
+                        Boolean found = false;
+                        foreach(string str in id_list)
+                        {
+                            if (str.Equals(dr["IdClient"].ToString())){
+                                found = true;
+                            }
+                        }
+                        if (!found)
+                        {
+                            id_list.Add(dr["IdClient"].ToString());
+                        }
+                    }
+                }
+                Microsoft.Office.Interop.Excel.Application exl = new Microsoft.Office.Interop.Excel.Application();
+                Workbook wb = exl.Workbooks.Add(XlSheetType.xlWorksheet);
+                Worksheet ws = (Worksheet)exl.ActiveSheet;
+
+                exl.Visible = true;
+
+                ws.Cells[1, 1] = "מספר תעודת זהות";
+                ws.Cells[1, 2] = "שם פרטי";
+                ws.Cells[1, 3] = "שם משפחה";
+                ws.Cells[1, 4] = "מספר טלפון";
+
+                int r = 2;
+                int c = 1;
+                DataSet ds_2 = new DataSet();
+                SqlDataAdapter da_2 = new SqlDataAdapter("SELECT * FROM Client", connection);
+                da_2.Fill(ds_2, "Client");
+                foreach (DataRow dr in ds_2.Tables["Client"].Rows)
+                {
+                    foreach(string id in id_list)
+                    {
+                        if (dr["IdNumber"].ToString().Equals(id))
+                        {
+                            ws.Cells[r, c++] = id;
+                            ws.Cells[r, c++] = dr["FirstName"].ToString();
+                            ws.Cells[r, c++] = dr["LastName"].ToString();
+                            ws.Cells[r++, c] = dr["PhoneNumber"].ToString();
+                            c = 1;
+                        }
+                    }
+                }
+                text_report_CBP.Text = "";
             }
         }
     }

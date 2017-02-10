@@ -491,7 +491,7 @@
             this.Controls.Add(this.fName);
             this.Controls.Add(this.id);
             this.Name = "client";
-            this.Text = "Trofot-x";
+            this.Text = "0";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.client_FormClosing);
             this.Load += new System.EventHandler(this.client_Load);
             this.paneldays.ResumeLayout(false);

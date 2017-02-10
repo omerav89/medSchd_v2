@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="ClientUpdate.cs" />
     <Compile Include="ClsMed.cs" />
+    <Compile Include="JasonToAndroid.cs" />
     <Compile Include="Medlist.cs" />
     <Compile Include="MedSchd.cs" />
     <Compile Include="NewClient.cs" />

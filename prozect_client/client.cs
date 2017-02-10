@@ -111,10 +111,16 @@ namespace prozect_client
 
         private void bring_p_btn_Click(object sender, EventArgs e)//bring pharmacist
         {
-            this.BringPharmacist();
-            bring_p_btn.Visible = false;
-            change_p_btn.Visible = true;
-            Pharmacist_number_txt.ReadOnly = true;
+            if (Pharmacist_number_txt.Text == "")
+            {
+                MessageBox.Show("יש להכניס זיהוי רוקח");
+            }
+            else {
+                this.BringPharmacist();
+                bring_p_btn.Visible = false;
+                change_p_btn.Visible = true;
+                Pharmacist_number_txt.ReadOnly = true;
+            }
         }
 
         
