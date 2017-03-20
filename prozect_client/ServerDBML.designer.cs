@@ -22,7 +22,7 @@ namespace prozect_client
 	using System;
 	
 	
-	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="Trofot")]
+	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="TROFOT")]
 	public partial class ServerDBMLDataContext : System.Data.Linq.DataContext
 	{
 		
@@ -30,22 +30,22 @@ namespace prozect_client
 		
     #region Extensibility Method Definitions
     partial void OnCreated();
-    partial void InsertClient(Client instance);
-    partial void UpdateClient(Client instance);
-    partial void DeleteClient(Client instance);
-    partial void InsertMedicine(Medicine instance);
-    partial void UpdateMedicine(Medicine instance);
-    partial void DeleteMedicine(Medicine instance);
-    partial void InsertPharmacist(Pharmacist instance);
-    partial void UpdatePharmacist(Pharmacist instance);
-    partial void DeletePharmacist(Pharmacist instance);
     partial void InsertPrescription(Prescription instance);
     partial void UpdatePrescription(Prescription instance);
     partial void DeletePrescription(Prescription instance);
+    partial void InsertPharmacist(Pharmacist instance);
+    partial void UpdatePharmacist(Pharmacist instance);
+    partial void DeletePharmacist(Pharmacist instance);
+    partial void InsertMedicine(Medicine instance);
+    partial void UpdateMedicine(Medicine instance);
+    partial void DeleteMedicine(Medicine instance);
+    partial void InsertClient(Client instance);
+    partial void UpdateClient(Client instance);
+    partial void DeleteClient(Client instance);
     #endregion
 		
 		public ServerDBMLDataContext() : 
-				base(global::prozect_client.Properties.Settings.Default.TrofotConnectionString, mappingSource)
+				base(global::prozect_client.Properties.Settings.Default.TROFOTConnectionString1, mappingSource)
 		{
 			OnCreated();
 		}
@@ -74,19 +74,11 @@ namespace prozect_client
 			OnCreated();
 		}
 		
-		public System.Data.Linq.Table<Client> Clients
+		public System.Data.Linq.Table<Prescription> Prescriptions
 		{
 			get
 			{
-				return this.GetTable<Client>();
-			}
-		}
-		
-		public System.Data.Linq.Table<Medicine> Medicines
-		{
-			get
-			{
-				return this.GetTable<Medicine>();
+				return this.GetTable<Prescription>();
 			}
 		}
 		
@@ -98,474 +90,20 @@ namespace prozect_client
 			}
 		}
 		
-		public System.Data.Linq.Table<Prescription> Prescriptions
+		public System.Data.Linq.Table<Medicine> Medicines
 		{
 			get
 			{
-				return this.GetTable<Prescription>();
+				return this.GetTable<Medicine>();
 			}
 		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Client")]
-	public partial class Client : INotifyPropertyChanging, INotifyPropertyChanged
-	{
 		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private string _IdNumber;
-		
-		private string _FirstName;
-		
-		private string _Lastname;
-		
-		private string _PhoneNumber;
-		
-		private EntitySet<Prescription> _Prescriptions;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnIdNumberChanging(string value);
-    partial void OnIdNumberChanged();
-    partial void OnFirstNameChanging(string value);
-    partial void OnFirstNameChanged();
-    partial void OnLastnameChanging(string value);
-    partial void OnLastnameChanged();
-    partial void OnPhoneNumberChanging(string value);
-    partial void OnPhoneNumberChanged();
-    #endregion
-		
-		public Client()
-		{
-			this._Prescriptions = new EntitySet<Prescription>(new Action<Prescription>(this.attach_Prescriptions), new Action<Prescription>(this.detach_Prescriptions));
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IdNumber", DbType="NChar(9) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
-		public string IdNumber
+		public System.Data.Linq.Table<Client> Clients
 		{
 			get
 			{
-				return this._IdNumber;
+				return this.GetTable<Client>();
 			}
-			set
-			{
-				if ((this._IdNumber != value))
-				{
-					this.OnIdNumberChanging(value);
-					this.SendPropertyChanging();
-					this._IdNumber = value;
-					this.SendPropertyChanged("IdNumber");
-					this.OnIdNumberChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FirstName", DbType="NChar(20) NOT NULL", CanBeNull=false)]
-		public string FirstName
-		{
-			get
-			{
-				return this._FirstName;
-			}
-			set
-			{
-				if ((this._FirstName != value))
-				{
-					this.OnFirstNameChanging(value);
-					this.SendPropertyChanging();
-					this._FirstName = value;
-					this.SendPropertyChanged("FirstName");
-					this.OnFirstNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Lastname", DbType="NChar(20) NOT NULL", CanBeNull=false)]
-		public string Lastname
-		{
-			get
-			{
-				return this._Lastname;
-			}
-			set
-			{
-				if ((this._Lastname != value))
-				{
-					this.OnLastnameChanging(value);
-					this.SendPropertyChanging();
-					this._Lastname = value;
-					this.SendPropertyChanged("Lastname");
-					this.OnLastnameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PhoneNumber", DbType="NChar(10) NOT NULL", CanBeNull=false)]
-		public string PhoneNumber
-		{
-			get
-			{
-				return this._PhoneNumber;
-			}
-			set
-			{
-				if ((this._PhoneNumber != value))
-				{
-					this.OnPhoneNumberChanging(value);
-					this.SendPropertyChanging();
-					this._PhoneNumber = value;
-					this.SendPropertyChanged("PhoneNumber");
-					this.OnPhoneNumberChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Client_Prescription", Storage="_Prescriptions", ThisKey="IdNumber", OtherKey="IdClient")]
-		public EntitySet<Prescription> Prescriptions
-		{
-			get
-			{
-				return this._Prescriptions;
-			}
-			set
-			{
-				this._Prescriptions.Assign(value);
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_Prescriptions(Prescription entity)
-		{
-			this.SendPropertyChanging();
-			entity.Client = this;
-		}
-		
-		private void detach_Prescriptions(Prescription entity)
-		{
-			this.SendPropertyChanging();
-			entity.Client = null;
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Medicines")]
-	public partial class Medicine : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private string _GenericName;
-		
-		private string _BrandName;
-		
-		private string _MedType;
-		
-		private string _TakeOption;
-		
-		private EntitySet<Prescription> _Prescriptions;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnGenericNameChanging(string value);
-    partial void OnGenericNameChanged();
-    partial void OnBrandNameChanging(string value);
-    partial void OnBrandNameChanged();
-    partial void OnMedTypeChanging(string value);
-    partial void OnMedTypeChanged();
-    partial void OnTakeOptionChanging(string value);
-    partial void OnTakeOptionChanged();
-    #endregion
-		
-		public Medicine()
-		{
-			this._Prescriptions = new EntitySet<Prescription>(new Action<Prescription>(this.attach_Prescriptions), new Action<Prescription>(this.detach_Prescriptions));
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_GenericName", DbType="NChar(20) NOT NULL", CanBeNull=false)]
-		public string GenericName
-		{
-			get
-			{
-				return this._GenericName;
-			}
-			set
-			{
-				if ((this._GenericName != value))
-				{
-					this.OnGenericNameChanging(value);
-					this.SendPropertyChanging();
-					this._GenericName = value;
-					this.SendPropertyChanged("GenericName");
-					this.OnGenericNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_BrandName", DbType="NChar(20) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
-		public string BrandName
-		{
-			get
-			{
-				return this._BrandName;
-			}
-			set
-			{
-				if ((this._BrandName != value))
-				{
-					this.OnBrandNameChanging(value);
-					this.SendPropertyChanging();
-					this._BrandName = value;
-					this.SendPropertyChanged("BrandName");
-					this.OnBrandNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MedType", DbType="NChar(10) NOT NULL", CanBeNull=false)]
-		public string MedType
-		{
-			get
-			{
-				return this._MedType;
-			}
-			set
-			{
-				if ((this._MedType != value))
-				{
-					this.OnMedTypeChanging(value);
-					this.SendPropertyChanging();
-					this._MedType = value;
-					this.SendPropertyChanged("MedType");
-					this.OnMedTypeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TakeOption", DbType="NChar(20) NOT NULL", CanBeNull=false)]
-		public string TakeOption
-		{
-			get
-			{
-				return this._TakeOption;
-			}
-			set
-			{
-				if ((this._TakeOption != value))
-				{
-					this.OnTakeOptionChanging(value);
-					this.SendPropertyChanging();
-					this._TakeOption = value;
-					this.SendPropertyChanged("TakeOption");
-					this.OnTakeOptionChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Medicine_Prescription", Storage="_Prescriptions", ThisKey="BrandName", OtherKey="IdMed")]
-		public EntitySet<Prescription> Prescriptions
-		{
-			get
-			{
-				return this._Prescriptions;
-			}
-			set
-			{
-				this._Prescriptions.Assign(value);
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_Prescriptions(Prescription entity)
-		{
-			this.SendPropertyChanging();
-			entity.Medicine = this;
-		}
-		
-		private void detach_Prescriptions(Prescription entity)
-		{
-			this.SendPropertyChanging();
-			entity.Medicine = null;
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Pharmacist")]
-	public partial class Pharmacist : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private string _IdNumber;
-		
-		private string _FirstName;
-		
-		private string _LastName;
-		
-		private EntitySet<Prescription> _Prescriptions;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnIdNumberChanging(string value);
-    partial void OnIdNumberChanged();
-    partial void OnFirstNameChanging(string value);
-    partial void OnFirstNameChanged();
-    partial void OnLastNameChanging(string value);
-    partial void OnLastNameChanged();
-    #endregion
-		
-		public Pharmacist()
-		{
-			this._Prescriptions = new EntitySet<Prescription>(new Action<Prescription>(this.attach_Prescriptions), new Action<Prescription>(this.detach_Prescriptions));
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IdNumber", DbType="NChar(6) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
-		public string IdNumber
-		{
-			get
-			{
-				return this._IdNumber;
-			}
-			set
-			{
-				if ((this._IdNumber != value))
-				{
-					this.OnIdNumberChanging(value);
-					this.SendPropertyChanging();
-					this._IdNumber = value;
-					this.SendPropertyChanged("IdNumber");
-					this.OnIdNumberChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FirstName", DbType="NChar(20) NOT NULL", CanBeNull=false)]
-		public string FirstName
-		{
-			get
-			{
-				return this._FirstName;
-			}
-			set
-			{
-				if ((this._FirstName != value))
-				{
-					this.OnFirstNameChanging(value);
-					this.SendPropertyChanging();
-					this._FirstName = value;
-					this.SendPropertyChanged("FirstName");
-					this.OnFirstNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastName", DbType="NChar(20) NOT NULL", CanBeNull=false)]
-		public string LastName
-		{
-			get
-			{
-				return this._LastName;
-			}
-			set
-			{
-				if ((this._LastName != value))
-				{
-					this.OnLastNameChanging(value);
-					this.SendPropertyChanging();
-					this._LastName = value;
-					this.SendPropertyChanged("LastName");
-					this.OnLastNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Pharmacist_Prescription", Storage="_Prescriptions", ThisKey="IdNumber", OtherKey="IdPharmacist")]
-		public EntitySet<Prescription> Prescriptions
-		{
-			get
-			{
-				return this._Prescriptions;
-			}
-			set
-			{
-				this._Prescriptions.Assign(value);
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_Prescriptions(Prescription entity)
-		{
-			this.SendPropertyChanging();
-			entity.Pharmacist = this;
-		}
-		
-		private void detach_Prescriptions(Prescription entity)
-		{
-			this.SendPropertyChanging();
-			entity.Pharmacist = null;
 		}
 	}
 	
@@ -575,23 +113,27 @@ namespace prozect_client
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
+		private int _Id;
+		
 		private string _IdMed;
 		
 		private string _IdClient;
 		
-		private System.DateTime _StartTaking;
-		
-		private int _EndOfTaking;
-		
-		private System.Nullable<int> _AmountMorning;
-		
-		private System.Nullable<int> _amountNoon;
-		
-		private System.Nullable<int> _amountNight;
-		
 		private string _IdPharmacist;
 		
-		private int _id;
+		private int _AmountMorning;
+		
+		private int _AmountNoon;
+		
+		private int _AmountNight;
+		
+		private System.DateTime _StartTaking;
+		
+		private int _NumOfDays;
+		
+		private int _NumOfDaysLeft;
+		
+		private System.DateTime _LastCheckDate;
 		
 		private EntityRef<Client> _Client;
 		
@@ -603,24 +145,28 @@ namespace prozect_client
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
     partial void OnIdMedChanging(string value);
     partial void OnIdMedChanged();
     partial void OnIdClientChanging(string value);
     partial void OnIdClientChanged();
+    partial void OnIdPharmacistChanging(string value);
+    partial void OnIdPharmacistChanged();
+    partial void OnAmountMorningChanging(int value);
+    partial void OnAmountMorningChanged();
+    partial void OnAmountNoonChanging(int value);
+    partial void OnAmountNoonChanged();
+    partial void OnAmountNightChanging(int value);
+    partial void OnAmountNightChanged();
     partial void OnStartTakingChanging(System.DateTime value);
     partial void OnStartTakingChanged();
     partial void OnNumOfDaysChanging(int value);
     partial void OnNumOfDaysChanged();
-    partial void OnAmountMorningChanging(System.Nullable<int> value);
-    partial void OnAmountMorningChanged();
-    partial void OnAmountNoonChanging(System.Nullable<int> value);
-    partial void OnAmountNoonChanged();
-    partial void OnAmountNightChanging(System.Nullable<int> value);
-    partial void OnAmountNightChanged();
-    partial void OnIdPharmacistChanging(string value);
-    partial void OnIdPharmacistChanged();
-    partial void OnIdChanging(int value);
-    partial void OnIdChanged();
+    partial void OnNumOfDaysLeftChanging(int value);
+    partial void OnNumOfDaysLeftChanged();
+    partial void OnLastCheckDateChanging(System.DateTime value);
+    partial void OnLastCheckDateChanged();
     #endregion
 		
 		public Prescription()
@@ -631,7 +177,27 @@ namespace prozect_client
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IdMed", DbType="NChar(20) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IdMed", DbType="NVarChar(20) NOT NULL", CanBeNull=false)]
 		public string IdMed
 		{
 			get
@@ -655,7 +221,7 @@ namespace prozect_client
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IdClient", DbType="NVChar(9) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IdClient", DbType="NVarChar(9) NOT NULL", CanBeNull=false)]
 		public string IdClient
 		{
 			get
@@ -675,106 +241,6 @@ namespace prozect_client
 					this._IdClient = value;
 					this.SendPropertyChanged("IdClient");
 					this.OnIdClientChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StartTaking", DbType="Date NOT NULL")]
-		public System.DateTime StartTaking
-		{
-			get
-			{
-				return this._StartTaking;
-			}
-			set
-			{
-				if ((this._StartTaking != value))
-				{
-					this.OnStartTakingChanging(value);
-					this.SendPropertyChanging();
-					this._StartTaking = value;
-					this.SendPropertyChanged("StartTaking");
-					this.OnStartTakingChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="EndOfTaking", Storage="_EndOfTaking", DbType="int NOT NULL")]
-		public int NumOfDays
-		{
-			get
-			{
-				return this._EndOfTaking;
-			}
-			set
-			{
-				if ((this._EndOfTaking != value))
-				{
-					this.OnNumOfDaysChanging(value);
-					this.SendPropertyChanging();
-					this._EndOfTaking = value;
-					this.SendPropertyChanged("NumOfDays");
-					this.OnNumOfDaysChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AmountMorning", DbType="Int")]
-		public System.Nullable<int> AmountMorning
-		{
-			get
-			{
-				return this._AmountMorning;
-			}
-			set
-			{
-				if ((this._AmountMorning != value))
-				{
-					this.OnAmountMorningChanging(value);
-					this.SendPropertyChanging();
-					this._AmountMorning = value;
-					this.SendPropertyChanged("AmountMorning");
-					this.OnAmountMorningChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="amountNoon", Storage="_amountNoon", DbType="Int")]
-		public System.Nullable<int> AmountNoon
-		{
-			get
-			{
-				return this._amountNoon;
-			}
-			set
-			{
-				if ((this._amountNoon != value))
-				{
-					this.OnAmountNoonChanging(value);
-					this.SendPropertyChanging();
-					this._amountNoon = value;
-					this.SendPropertyChanged("AmountNoon");
-					this.OnAmountNoonChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="amountNight", Storage="_amountNight", DbType="Int")]
-		public System.Nullable<int> AmountNight
-		{
-			get
-			{
-				return this._amountNight;
-			}
-			set
-			{
-				if ((this._amountNight != value))
-				{
-					this.OnAmountNightChanging(value);
-					this.SendPropertyChanging();
-					this._amountNight = value;
-					this.SendPropertyChanged("AmountNight");
-					this.OnAmountNightChanged();
 				}
 			}
 		}
@@ -803,22 +269,142 @@ namespace prozect_client
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="id", Storage="_id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AmountMorning", DbType="Int NOT NULL")]
+		public int AmountMorning
 		{
 			get
 			{
-				return this._id;
+				return this._AmountMorning;
 			}
 			set
 			{
-				if ((this._id != value))
+				if ((this._AmountMorning != value))
 				{
-					this.OnIdChanging(value);
+					this.OnAmountMorningChanging(value);
 					this.SendPropertyChanging();
-					this._id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
+					this._AmountMorning = value;
+					this.SendPropertyChanged("AmountMorning");
+					this.OnAmountMorningChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AmountNoon", DbType="Int NOT NULL")]
+		public int AmountNoon
+		{
+			get
+			{
+				return this._AmountNoon;
+			}
+			set
+			{
+				if ((this._AmountNoon != value))
+				{
+					this.OnAmountNoonChanging(value);
+					this.SendPropertyChanging();
+					this._AmountNoon = value;
+					this.SendPropertyChanged("AmountNoon");
+					this.OnAmountNoonChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AmountNight", DbType="Int NOT NULL")]
+		public int AmountNight
+		{
+			get
+			{
+				return this._AmountNight;
+			}
+			set
+			{
+				if ((this._AmountNight != value))
+				{
+					this.OnAmountNightChanging(value);
+					this.SendPropertyChanging();
+					this._AmountNight = value;
+					this.SendPropertyChanged("AmountNight");
+					this.OnAmountNightChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StartTaking", DbType="DateTime NOT NULL")]
+		public System.DateTime StartTaking
+		{
+			get
+			{
+				return this._StartTaking;
+			}
+			set
+			{
+				if ((this._StartTaking != value))
+				{
+					this.OnStartTakingChanging(value);
+					this.SendPropertyChanging();
+					this._StartTaking = value;
+					this.SendPropertyChanged("StartTaking");
+					this.OnStartTakingChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NumOfDays", DbType="Int NOT NULL")]
+		public int NumOfDays
+		{
+			get
+			{
+				return this._NumOfDays;
+			}
+			set
+			{
+				if ((this._NumOfDays != value))
+				{
+					this.OnNumOfDaysChanging(value);
+					this.SendPropertyChanging();
+					this._NumOfDays = value;
+					this.SendPropertyChanged("NumOfDays");
+					this.OnNumOfDaysChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NumOfDaysLeft", DbType="Int NOT NULL")]
+		public int NumOfDaysLeft
+		{
+			get
+			{
+				return this._NumOfDaysLeft;
+			}
+			set
+			{
+				if ((this._NumOfDaysLeft != value))
+				{
+					this.OnNumOfDaysLeftChanging(value);
+					this.SendPropertyChanging();
+					this._NumOfDaysLeft = value;
+					this.SendPropertyChanged("NumOfDaysLeft");
+					this.OnNumOfDaysLeftChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastCheckDate", DbType="DateTime NOT NULL")]
+		public System.DateTime LastCheckDate
+		{
+			get
+			{
+				return this._LastCheckDate;
+			}
+			set
+			{
+				if ((this._LastCheckDate != value))
+				{
+					this.OnLastCheckDateChanging(value);
+					this.SendPropertyChanging();
+					this._LastCheckDate = value;
+					this.SendPropertyChanged("LastCheckDate");
+					this.OnLastCheckDateChanged();
 				}
 			}
 		}
@@ -943,6 +529,468 @@ namespace prozect_client
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Pharmacist")]
+	public partial class Pharmacist : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private string _IdNumber;
+		
+		private string _FirstName;
+		
+		private string _LastName;
+		
+		private EntitySet<Prescription> _Prescriptions;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdNumberChanging(string value);
+    partial void OnIdNumberChanged();
+    partial void OnFirstNameChanging(string value);
+    partial void OnFirstNameChanged();
+    partial void OnLastNameChanging(string value);
+    partial void OnLastNameChanged();
+    #endregion
+		
+		public Pharmacist()
+		{
+			this._Prescriptions = new EntitySet<Prescription>(new Action<Prescription>(this.attach_Prescriptions), new Action<Prescription>(this.detach_Prescriptions));
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IdNumber", DbType="NChar(6) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
+		public string IdNumber
+		{
+			get
+			{
+				return this._IdNumber;
+			}
+			set
+			{
+				if ((this._IdNumber != value))
+				{
+					this.OnIdNumberChanging(value);
+					this.SendPropertyChanging();
+					this._IdNumber = value;
+					this.SendPropertyChanged("IdNumber");
+					this.OnIdNumberChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FirstName", DbType="NVarChar(20) NOT NULL", CanBeNull=false)]
+		public string FirstName
+		{
+			get
+			{
+				return this._FirstName;
+			}
+			set
+			{
+				if ((this._FirstName != value))
+				{
+					this.OnFirstNameChanging(value);
+					this.SendPropertyChanging();
+					this._FirstName = value;
+					this.SendPropertyChanged("FirstName");
+					this.OnFirstNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastName", DbType="NVarChar(20) NOT NULL", CanBeNull=false)]
+		public string LastName
+		{
+			get
+			{
+				return this._LastName;
+			}
+			set
+			{
+				if ((this._LastName != value))
+				{
+					this.OnLastNameChanging(value);
+					this.SendPropertyChanging();
+					this._LastName = value;
+					this.SendPropertyChanged("LastName");
+					this.OnLastNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Pharmacist_Prescription", Storage="_Prescriptions", ThisKey="IdNumber", OtherKey="IdPharmacist")]
+		public EntitySet<Prescription> Prescriptions
+		{
+			get
+			{
+				return this._Prescriptions;
+			}
+			set
+			{
+				this._Prescriptions.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_Prescriptions(Prescription entity)
+		{
+			this.SendPropertyChanging();
+			entity.Pharmacist = this;
+		}
+		
+		private void detach_Prescriptions(Prescription entity)
+		{
+			this.SendPropertyChanging();
+			entity.Pharmacist = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Medicine")]
+	public partial class Medicine : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private string _BrandName;
+		
+		private string _GenericName;
+		
+		private string _MedType;
+		
+		private string _TakeOption;
+		
+		private EntitySet<Prescription> _Prescriptions;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnBrandNameChanging(string value);
+    partial void OnBrandNameChanged();
+    partial void OnGenericNameChanging(string value);
+    partial void OnGenericNameChanged();
+    partial void OnMedTypeChanging(string value);
+    partial void OnMedTypeChanged();
+    partial void OnTakeOptionChanging(string value);
+    partial void OnTakeOptionChanged();
+    #endregion
+		
+		public Medicine()
+		{
+			this._Prescriptions = new EntitySet<Prescription>(new Action<Prescription>(this.attach_Prescriptions), new Action<Prescription>(this.detach_Prescriptions));
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_BrandName", DbType="NVarChar(20) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
+		public string BrandName
+		{
+			get
+			{
+				return this._BrandName;
+			}
+			set
+			{
+				if ((this._BrandName != value))
+				{
+					this.OnBrandNameChanging(value);
+					this.SendPropertyChanging();
+					this._BrandName = value;
+					this.SendPropertyChanged("BrandName");
+					this.OnBrandNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_GenericName", DbType="NVarChar(20) NOT NULL", CanBeNull=false)]
+		public string GenericName
+		{
+			get
+			{
+				return this._GenericName;
+			}
+			set
+			{
+				if ((this._GenericName != value))
+				{
+					this.OnGenericNameChanging(value);
+					this.SendPropertyChanging();
+					this._GenericName = value;
+					this.SendPropertyChanged("GenericName");
+					this.OnGenericNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MedType", DbType="NVarChar(30) NOT NULL", CanBeNull=false)]
+		public string MedType
+		{
+			get
+			{
+				return this._MedType;
+			}
+			set
+			{
+				if ((this._MedType != value))
+				{
+					this.OnMedTypeChanging(value);
+					this.SendPropertyChanging();
+					this._MedType = value;
+					this.SendPropertyChanged("MedType");
+					this.OnMedTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TakeOption", DbType="NVarChar(10) NOT NULL", CanBeNull=false)]
+		public string TakeOption
+		{
+			get
+			{
+				return this._TakeOption;
+			}
+			set
+			{
+				if ((this._TakeOption != value))
+				{
+					this.OnTakeOptionChanging(value);
+					this.SendPropertyChanging();
+					this._TakeOption = value;
+					this.SendPropertyChanged("TakeOption");
+					this.OnTakeOptionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Medicine_Prescription", Storage="_Prescriptions", ThisKey="BrandName", OtherKey="IdMed")]
+		public EntitySet<Prescription> Prescriptions
+		{
+			get
+			{
+				return this._Prescriptions;
+			}
+			set
+			{
+				this._Prescriptions.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_Prescriptions(Prescription entity)
+		{
+			this.SendPropertyChanging();
+			entity.Medicine = this;
+		}
+		
+		private void detach_Prescriptions(Prescription entity)
+		{
+			this.SendPropertyChanging();
+			entity.Medicine = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Client")]
+	public partial class Client : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private string _IdNumber;
+		
+		private string _FirstName;
+		
+		private string _LastName;
+		
+		private string _PhoneNumber;
+		
+		private EntitySet<Prescription> _Prescriptions;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdNumberChanging(string value);
+    partial void OnIdNumberChanged();
+    partial void OnFirstNameChanging(string value);
+    partial void OnFirstNameChanged();
+    partial void OnLastNameChanging(string value);
+    partial void OnLastNameChanged();
+    partial void OnPhoneNumberChanging(string value);
+    partial void OnPhoneNumberChanged();
+    #endregion
+		
+		public Client()
+		{
+			this._Prescriptions = new EntitySet<Prescription>(new Action<Prescription>(this.attach_Prescriptions), new Action<Prescription>(this.detach_Prescriptions));
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IdNumber", DbType="NVarChar(9) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
+		public string IdNumber
+		{
+			get
+			{
+				return this._IdNumber;
+			}
+			set
+			{
+				if ((this._IdNumber != value))
+				{
+					this.OnIdNumberChanging(value);
+					this.SendPropertyChanging();
+					this._IdNumber = value;
+					this.SendPropertyChanged("IdNumber");
+					this.OnIdNumberChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FirstName", DbType="NVarChar(20) NOT NULL", CanBeNull=false)]
+		public string FirstName
+		{
+			get
+			{
+				return this._FirstName;
+			}
+			set
+			{
+				if ((this._FirstName != value))
+				{
+					this.OnFirstNameChanging(value);
+					this.SendPropertyChanging();
+					this._FirstName = value;
+					this.SendPropertyChanged("FirstName");
+					this.OnFirstNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastName", DbType="NVarChar(20) NOT NULL", CanBeNull=false)]
+		public string LastName
+		{
+			get
+			{
+				return this._LastName;
+			}
+			set
+			{
+				if ((this._LastName != value))
+				{
+					this.OnLastNameChanging(value);
+					this.SendPropertyChanging();
+					this._LastName = value;
+					this.SendPropertyChanged("LastName");
+					this.OnLastNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PhoneNumber", DbType="NVarChar(10) NOT NULL", CanBeNull=false)]
+		public string PhoneNumber
+		{
+			get
+			{
+				return this._PhoneNumber;
+			}
+			set
+			{
+				if ((this._PhoneNumber != value))
+				{
+					this.OnPhoneNumberChanging(value);
+					this.SendPropertyChanging();
+					this._PhoneNumber = value;
+					this.SendPropertyChanged("PhoneNumber");
+					this.OnPhoneNumberChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Client_Prescription", Storage="_Prescriptions", ThisKey="IdNumber", OtherKey="IdClient")]
+		public EntitySet<Prescription> Prescriptions
+		{
+			get
+			{
+				return this._Prescriptions;
+			}
+			set
+			{
+				this._Prescriptions.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_Prescriptions(Prescription entity)
+		{
+			this.SendPropertyChanging();
+			entity.Client = this;
+		}
+		
+		private void detach_Prescriptions(Prescription entity)
+		{
+			this.SendPropertyChanging();
+			entity.Client = null;
 		}
 	}
 }

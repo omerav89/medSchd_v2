@@ -32,31 +32,37 @@ namespace prozect_client
                 if (Client == null || (Client != null && !Client.Connected))
                 {
                     Client = new TcpClient();
+                   
+                        Client.Connect(ip, port);
 
-                    Client.Connect(ip, port);                   
-                 
+
+
                         stream = Client.GetStream();
 
                         reader = new BinaryReader(stream);
                         writer = new BinaryWriter(stream);
-
-                        string str = reader.ReadString();
                     
                 }
 
             }
-            catch (Exception ex)
+            catch (SocketException ex)
             {
-                MessageBox.Show("Unable to connect");
+                MessageBox.Show("יש בעיה בחיבור אנא נסה שנית \n במקרה והתקלה חוזרת פנה לצוות הטכני" );
             }
         }
 
         public static string retrieveAllMedicne(this client cs)//connect server and ask for string with all the meds
         {
-            connectToServer("127.0.0.1", 8001);
+            try
+            {
+                connectToServer("127.0.0.1", 8001);
+
+            }
+            catch (Exception) { }
+
                 writer.Write("MedCombo");
                 return reader.ReadString();
-            
+                    
         }
 
 
@@ -73,12 +79,17 @@ namespace prozect_client
         public static void sendData(this client cs)//chek input >> connect >> send prescription to server >> db
         {
             int cnt = 0;
-            connectToServer("127.0.0.1", 8001);
+            try
+            {
+                connectToServer("127.0.0.1", 8001);
+
+            }
+            catch (Exception) { }
 
             MedSchd med = new MedSchd();
 
             med.ClientId = cs.text_id.Text;
-            med.PharmacistId = Int32.Parse(cs.Pharmacist_number_txt.Text);
+            med.PharmacistId = cs.Pharmacist_number_txt.Text;
             med.MedId = cs.comboMed.SelectedItem.ToString();
             if (cs.MorningText.Text == "")
             {
@@ -133,50 +144,57 @@ namespace prozect_client
 
 
         public static void BringClient(this client cs)//connect server >> search client by id >> return info >> put in textBox
-        {            
-            int cnt = 0;
-            connectToServer("127.0.0.1", 8001);
-            while (cnt < 2)
-            {
-                if (cnt == 0)
+        {
+            
+                int cnt = 0;
+                connectToServer("127.0.0.1", 8001);
+                while (cnt < 2)
                 {
-                    writer.Write("clientId");
-                    cnt++;
-                }
-                else
-                {
-                    writer.Write(cs.Id_old_client_text.Text);
-                    string old_client = reader.ReadString();
-                    NewClient newClient = JsonConvert.DeserializeObject<NewClient>(old_client);
-                    if (newClient.ClientId == null)
+                    if (cnt == 0)
                     {
-                        MessageBox.Show("מספר תעודת זהות זו אינה נמצאת במערכת... וודא שהמספר נכון ונסה שנית");
+                        writer.Write("clientId");
                         cnt++;
                     }
                     else
                     {
-                        cs.text_id.Text = newClient.ClientId;
-                        cs.PhoneNumberText.Text = newClient.PhoneNumber;
-                        cs.text_fName.Text = newClient.FirstName;
-                        cs.text_lName.Text = newClient.LastName;
-                        cnt++;
-                        newClient.ClientId = "";
-                        newClient.PhoneNumber = "";
-                        newClient.FirstName = "";
-                        newClient.LastName = "";
+                        writer.Write(cs.Id_old_client_text.Text);
+                        string old_client = reader.ReadString();
+                        NewClient newClient = JsonConvert.DeserializeObject<NewClient>(old_client);
+                        if (newClient.ClientId == null)
+                        {
+                            MessageBox.Show("מספר תעודת זהות זו אינה נמצאת במערכת... וודא שהמספר נכון ונסה שנית");
+                            cnt++;
+                        }
+                        else
+                        {
+                            cs.text_id.Text = newClient.ClientId;
+                            cs.PhoneNumberText.Text = newClient.PhoneNumber;
+                            cs.text_fName.Text = newClient.FirstName;
+                            cs.text_lName.Text = newClient.LastName;
+                            cnt++;
+                            newClient.ClientId = "";
+                            newClient.PhoneNumber = "";
+                            newClient.FirstName = "";
+                            newClient.LastName = "";
+                        }
                     }
                 }
-            }
-            cs.Id_old_client_text.Text = "";
-            cs.SearchClientPanel.Visible = false;
+                cs.Id_old_client_text.Text = "";
+                cs.SearchClientPanel.Visible = false;
 
+         
         }
 
         public static void BringPharmacist(this client cs)//connect server >> search pharmacist by id >> return his first name >> put in textBox
         {
             string PharmacistName = "";
             int cnt = 0;
-            connectToServer("127.0.0.1", 8001);
+            try
+            {
+                connectToServer("127.0.0.1", 8001);
+
+            }
+            catch (Exception) { }
             while (cnt < 2)
             {
                 if (cnt == 0)

@@ -53,7 +53,6 @@
             this.errorProvider_trofot = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorId = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorProvider_date = new System.Windows.Forms.ErrorProvider(this.components);
-            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.old_client = new System.Windows.Forms.Button();
             this.PhoneNumber = new System.Windows.Forms.Label();
             this.PhoneNumberText = new System.Windows.Forms.TextBox();
@@ -70,6 +69,7 @@
             this.NumOfDays_txt = new System.Windows.Forms.TextBox();
             this.timer_ComboMed = new System.Windows.Forms.Timer(this.components);
             this.refresh_combo_med = new System.Windows.Forms.Button();
+            this.date_l = new System.Windows.Forms.Label();
             this.paneldays.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_trofot)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorId)).BeginInit();
@@ -293,15 +293,6 @@
             this.errorProvider_date.RightToLeft = true;
             this.errorProvider_date.RightToLeftChanged += new System.EventHandler(this.ConnectServer_SendData_Click);
             // 
-            // dateTimePicker1
-            // 
-            this.dateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateTimePicker1.Location = new System.Drawing.Point(3, 1);
-            this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(84, 20);
-            this.dateTimePicker1.TabIndex = 50;
-            this.dateTimePicker1.Value = new System.DateTime(2016, 11, 6, 8, 18, 54, 0);
-            // 
             // old_client
             // 
             this.old_client.Location = new System.Drawing.Point(89, 33);
@@ -456,12 +447,21 @@
             this.refresh_combo_med.UseVisualStyleBackColor = true;
             this.refresh_combo_med.Click += new System.EventHandler(this.refresh_combo_med_Click);
             // 
+            // date_l
+            // 
+            this.date_l.AutoSize = true;
+            this.date_l.Location = new System.Drawing.Point(9, 9);
+            this.date_l.Name = "date_l";
+            this.date_l.Size = new System.Drawing.Size(0, 13);
+            this.date_l.TabIndex = 74;
+            // 
             // client
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Highlight;
             this.ClientSize = new System.Drawing.Size(743, 324);
+            this.Controls.Add(this.date_l);
             this.Controls.Add(this.refresh_combo_med);
             this.Controls.Add(this.NumOfDays_txt);
             this.Controls.Add(this.Client_Label);
@@ -474,7 +474,6 @@
             this.Controls.Add(this.PhoneNumberText);
             this.Controls.Add(this.PhoneNumber);
             this.Controls.Add(this.old_client);
-            this.Controls.Add(this.dateTimePicker1);
             this.Controls.Add(this.paneldays);
             this.Controls.Add(this.AddMedicine);
             this.Controls.Add(this.MedAmount);
@@ -532,7 +531,6 @@
         private System.Windows.Forms.ErrorProvider errorProvider_trofot;
         private System.Windows.Forms.ErrorProvider errorId;
         private System.Windows.Forms.ErrorProvider errorProvider_date;
-        private System.Windows.Forms.DateTimePicker dateTimePicker1;
         private System.Windows.Forms.Button old_client;
         public System.Windows.Forms.Label PhoneNumber;
         public System.Windows.Forms.TextBox PhoneNumberText;
@@ -549,6 +547,7 @@
         private System.Windows.Forms.Label Client_Label;
         private System.Windows.Forms.Timer timer_ComboMed;
         private System.Windows.Forms.Button refresh_combo_med;
+        private System.Windows.Forms.Label date_l;
     }
 }
 

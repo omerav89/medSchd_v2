@@ -16,10 +16,18 @@ namespace prozect_client
     {
         
         private bool ok = true;
+        private void client_Load(object sender, EventArgs e)//call setVisiblePanels and fill comboMed
+        {
+            this.setVisiblePanels();
+            timer_ComboMed.Start();
+            ComboMedThread();
+            date_l.Text = DateTime.Now.ToShortDateString();
+        }
+
         public client()
         {
-            InitializeComponent();            
-        }              
+            InitializeComponent();
+        }
         private void ConnectServer_SendData_Click(object sender, EventArgs e)//send data to server >> db
         {
             if (comboMed.SelectedIndex != -1)
@@ -37,19 +45,24 @@ namespace prozect_client
                 ok = true;
                 if (ok)
                 {
-                    this.sendData();
-                    SearchClientPanel.Visible = false;
+                    try
+                    {
+                        this.sendData();
+                        SearchClientPanel.Visible = false;
 
-                    text_id.Text = "";
-                    text_fName.Text = "";
-                    text_lName.Text = "";
-                    paneldays.Visible = true;
-                    MorningText.Text = "";
-                    NoonText.Text = "";
-                    NightText.Text = "";
-                    comboMed.SelectedIndex = -1;
-                    NumOfDays_txt.Text = "";
-                    PhoneNumberText.Text = "";
+                        text_id.Text = "";
+                        text_fName.Text = "";
+                        text_lName.Text = "";
+                        paneldays.Visible = true;
+                        MorningText.Text = "";
+                        NoonText.Text = "";
+                        NightText.Text = "";
+                        comboMed.SelectedIndex = -1;
+                        NumOfDays_txt.Text = "";
+                        PhoneNumberText.Text = "";
+
+                    }
+                    catch (Exception) { }
                 }
 
                 else
@@ -62,25 +75,24 @@ namespace prozect_client
 
         private void AddMedicine_Click_1(object sender, EventArgs e)//add prescription and restart all except pharmacist and client info
         {
-            this.sendData();
-            SearchClientPanel.Visible = false;
-            comboMed.SelectedIndex = -1;
-            MorningText.Text = "";
-            NoonText.Text = "";
-            NightText.Text = "";
-            NumOfDays.Text = "";
+            try
+            {
+                this.sendData();
+                SearchClientPanel.Visible = false;
+                comboMed.SelectedIndex = -1;
+                MorningText.Text = "";
+                NoonText.Text = "";
+                NightText.Text = "";
+                NumOfDays.Text = "";
+            }
+            catch (Exception) { }
+            
         }
 
   
 
 
-        private void client_Load(object sender, EventArgs e)//call setVisiblePanels and fill comboMed
-        {
-            this.setVisiblePanels();
-            timer_ComboMed.Start();
-            ComboMedThread();
-        }
-
+    
         private void updateMedCombo()
         {
             string[] meds = this.retrieveAllMedicne().Split(',');          
@@ -104,9 +116,16 @@ namespace prozect_client
 
         private void Search_client_Click(object sender, EventArgs e)//search client and return his info
         {
-            this.BringClient();
-            ConnectServer_SendData.Visible = true;
-            AddMedicine.Visible = true;
+            try
+            {
+                this.BringClient();
+                ConnectServer_SendData.Visible = true;
+                AddMedicine.Visible = true;
+            }
+            catch (Exception ex)
+            {
+            }
+            
         }
 
         private void bring_p_btn_Click(object sender, EventArgs e)//bring pharmacist
@@ -116,10 +135,15 @@ namespace prozect_client
                 MessageBox.Show("יש להכניס זיהוי רוקח");
             }
             else {
-                this.BringPharmacist();
-                bring_p_btn.Visible = false;
-                change_p_btn.Visible = true;
-                Pharmacist_number_txt.ReadOnly = true;
+                try
+                {
+                    this.BringPharmacist();
+                    bring_p_btn.Visible = false;
+                    change_p_btn.Visible = true;
+                    Pharmacist_number_txt.ReadOnly = true;
+                }
+                catch (Exception) { }
+                
             }
         }
 

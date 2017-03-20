@@ -26,24 +26,28 @@ namespace project
         private SqlDataAdapter dataAdapter_Prescription;
         private DataSet dataSet;
         private bool keepListening;
-        Thread thread;
+        Thread thread_app, thread_pharm;
         private MedSchd medSchd;
         private string medSchd_json;
         SqlDataReader reader;
         private bool ok_c = false;
 
+        
         public server()
         {
             InitializeComponent();
-            thread = new Thread(listen);
-            thread.IsBackground = true;
+            thread_pharm = new Thread(listen_pharmacist);
+            thread_pharm.IsBackground = true;
+            thread_app = new Thread(listen_app);
+            thread_app.IsBackground = true;
             connection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Admin\Documents\GitHub\medSchd_v2\DB\TROFOT.mdf;Integrated Security=True;Connect Timeout=30");
         }
 
         private void server_Load(object sender, EventArgs e)// set visibilty when server load
         {
             keepListening = true;
-            thread.Start();
+            thread_app.Start();
+            thread_pharm.Start();
             startListen.Visible = false;
             cancelListen.Visible = true;
             Llisten.Visible = true;
@@ -70,11 +74,41 @@ namespace project
             Update_p_btn.Visible = false;
             cancel.Visible = false;
             Cancel_update_btn.Visible = false;
+            string currentTime = DateTime.Now.ToShortDateString();
+            string currentTime2 = DateTime.Now.ToShortDateString();
+            
         }
 
 
 
-        public void listen()//create tcp listener >> start listen >> start background thread of clientHandler 
+
+        public void listen_app()//create tcp listener >> start listen >> start background thread of clientHandler 
+        {
+
+            keepListening = true;
+            IPAddress ipAd = IPAddress.Parse("127.0.0.1");
+
+            TcpListener listener = new TcpListener(ipAd, 8053);
+
+            listener.Start();
+
+            while (keepListening)
+            {
+
+                TcpClient client = listener.AcceptTcpClient();
+
+
+                Thread thread = new Thread(clientHandler_app);
+                thread.IsBackground = true;
+                thread.Start(client);
+
+            }
+
+            listener.Stop();
+
+        }
+
+        public void listen_pharmacist()//create tcp listener >> start listen >> start background thread of clientHandler 
         {
 
             keepListening = true;
@@ -90,7 +124,7 @@ namespace project
                 TcpClient client = listener.AcceptTcpClient();
 
 
-                Thread thread = new Thread(clientHandler);
+                Thread thread = new Thread(clientHandler_pharm);
                 thread.IsBackground = true;
                 thread.Start(client);
 
@@ -100,188 +134,268 @@ namespace project
 
         }
 
-        public void clientHandler(object clientConection)//create new client and open stream >> receive data from client
+        public void clientHandler_pharm(object clientConection)//create new client and open stream >> receive data from client
         {
-            NewClient newC = new NewClient();
-            string str = "";
-            TcpClient client = clientConection as TcpClient;
-            if (client == null)
+            try
             {
-                throw new Exception("A non valid connection");
+                NewClient newC = new NewClient();
+                string str = "";
+                TcpClient client = clientConection as TcpClient;
+
+                if (client == null)
+                {
+                    throw new Exception("A non valid connection");
+                }
+                NetworkStream stream = client.GetStream();
+                BinaryReader reader = new BinaryReader(stream);
+                BinaryWriter writer = new BinaryWriter(stream); 
+
+                while (client.Connected)
+                {
+                    
+                    str = reader.ReadString();
+                   
+                   
+                    StreamWriter log = new StreamWriter(@"C:\Users\Admin\Documents\logFile.txt", true);
+                    log.WriteLine("INFO:" + str);
+                    log.Close();
+
+                    if (str == "EXIT")
+                    {
+                        client.Close();
+                    }
+                    else if (str == "prescription")
+                    {
+                        medSchd_json = reader.ReadString();
+                        medSchd = JsonConvert.DeserializeObject<MedSchd>(medSchd_json);
+                        initConnection();
+
+
+
+                    }
+                    else if (str == "clientId")
+                    {
+                        try
+                        {
+                            string id = reader.ReadString();
+                            bool found = false;
+                            DataSet ds_old_Client_id = new DataSet();
+                            SqlDataAdapter da_old_Client_id = new SqlDataAdapter("SELECT * FROM Client", connection);
+                            da_old_Client_id.Fill(ds_old_Client_id, "Client");
+                            DataRow[] arr_client = ds_old_Client_id.Tables["Client"].Select("IdNumber =" + id);
+
+                            foreach (DataRow dr in arr_client)
+                            {
+                                found = true;
+                                newC.ClientId += dr["IdNumber"];
+                                newC.FirstName += dr["FirstName"];
+                                newC.LastName += dr["LastName"];
+                                newC.PhoneNumber += dr["PhoneNumber"];
+                            }
+                            if (!found)
+                            {
+                                MessageBox.Show("1");
+                                newC.ClientId = "";
+                                newC.FirstName = "";
+                                newC.LastName = "";
+                                newC.PhoneNumber = "";
+                                string client_json = JsonConvert.SerializeObject(newC);
+                                writer.Write(client_json);
+                            }
+                            else
+                            {
+                                string client_json = JsonConvert.SerializeObject(newC);
+                                writer.Write(client_json);
+                                newC.ClientId = "";
+                                newC.FirstName = "";
+                                newC.LastName = "";
+                                newC.PhoneNumber = "";
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.ToString());
+
+                        }
+                    }
+
+                    else if (str == "PharmacistId")
+                    {
+                        try
+                        {
+                            string str_p = reader.ReadString();
+                            string str_PN = "";
+                            bool found = false;
+                            DataSet ds_pharmacist = new DataSet();
+                            SqlDataAdapter da_pharmacist = new SqlDataAdapter("SELECT * FROM pharmacist", connection);
+                            da_pharmacist.Fill(ds_pharmacist, "pharmacist");
+                            DataRow[] arr_p = ds_pharmacist.Tables["pharmacist"].Select("IdNumber =" + str_p);
+
+                            foreach (DataRow dr in arr_p)
+                            {
+                                found = true;
+                                str_PN += dr["FirstName"];
+                            }
+                            if (!found)
+                            {
+                                str_PN = "";
+                                writer.Write(str_PN);
+                            }
+                            else
+                            {
+                                writer.Write(str_PN);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.ToString());
+                        }
+                    }
+                    else if (str == "MedCombo")
+                    {
+                        DataSet ds_medCombo = new DataSet();
+                        SqlDataAdapter da_medCombo = new SqlDataAdapter("SELECT BrandName FROM Medicine", connection);
+                        da_medCombo.Fill(ds_medCombo, "Medicine");
+                        DataRow[] arr_p = ds_medCombo.Tables["Medicine"].Select();
+
+                        var medList = ds_medCombo.Tables["Medicine"]
+                            .AsEnumerable()
+                            .Select(medicine => new
+                            {
+                                BrnadName = medicine.Field<string>("BrandName")
+                            });
+
+                        string med_str = "";
+
+                        foreach (var med in medList)
+                        {
+                            med_str += med.BrnadName.Trim() + ",";
+                        }
+
+                        writer.Write(med_str);
+                    }
+
+                }
+            } catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
             }
-            NetworkStream stream = client.GetStream();
-            BinaryReader reader = new BinaryReader(stream);
-            BinaryWriter writer = new BinaryWriter(stream);
-            StreamReader st = new StreamReader(stream);
+        }
 
-            while (client.Connected)
+
+
+        public void clientHandler_app(object clientConection)//create new client and open stream >> receive data from client
+        {
+            try
             {
-                MessageBox.Show("connect");
-                str = reader.ReadString();
-                MessageBox.Show(str);
+                NewClient newC = new NewClient();
+                TcpClient client = clientConection as TcpClient;
 
-                if (str == "EXIT")
+                if (client == null)
                 {
-                    client.Close();
+                    throw new Exception("A non valid connection");
                 }
-                else if (str == "prescription")
+                NetworkStream stream = client.GetStream();
+                StreamWriter writer = new StreamWriter(stream);
+                StreamReader reader = new StreamReader(stream);
+
+
+
+                while (client.Connected)
                 {
-                    medSchd_json = reader.ReadString();
-                    medSchd = JsonConvert.DeserializeObject<MedSchd>(medSchd_json);
-                    initConnection();
-                    //ClientUpdate up = new ClientUpdate();
-                    //up.Amount = 10;
-                    //up.MedType = "Advil";
-                    //for (int i = 0; i < 10; i++)
-                    //    writer.Write("TESTING: " + i);
+                    string str = reader.ReadLine();
 
-                    //writer.Write(android_json);
-
-
-                }
-                else if (str == "clientId")
-                {
-                    try
+                    if (str == null || (str != null && str.Trim(' ').Length == 0))
                     {
-                        string id = reader.ReadString();
-                        bool found = false;
-                        DataSet ds_old_Client_id = new DataSet();
-                        SqlDataAdapter da_old_Client_id = new SqlDataAdapter("SELECT * FROM Client", connection);
-                        da_old_Client_id.Fill(ds_old_Client_id, "Client");
-                        DataRow[] arr_client = ds_old_Client_id.Tables["Client"].Select("IdNumber =" + id);
-
-                        foreach (DataRow dr in arr_client)
-                        {
-                            found = true;
-                            newC.ClientId += dr["IdNumber"];
-                            newC.FirstName += dr["FirstName"];
-                            newC.LastName += dr["LastName"];
-                            newC.PhoneNumber += dr["PhoneNumber"];
-                        }
-                        if (!found)
-                        {
-                            newC.ClientId = "";
-                            newC.FirstName = "";
-                            newC.LastName = "";
-                            newC.PhoneNumber = "";
-                            string client_json = JsonConvert.SerializeObject(newC);
-                            writer.Write(client_json);
-                        }
-                        else
-                        {
-                            string client_json = JsonConvert.SerializeObject(newC);
-                            writer.Write(client_json);
-                            newC.ClientId = "";
-                            newC.FirstName = "";
-                            newC.LastName = "";
-                            newC.PhoneNumber = "";
-                        }
+                        continue;
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.ToString());
 
+                    StreamWriter log = new StreamWriter(@"C:\Users\Admin\Documents\logFile.txt", true);
+                    log.WriteLine("INFO:" + str);
+                    log.Close();
+                    if (str == "EXIT")
+                    {
+                        client.Close();
                     }
-                }
-
-                else if (str == "PharmacistId")
-                {
-                    try
+                    else if (str == "androidClient")
                     {
-                        string str_p = reader.ReadString();
-                        string str_PN = "";
-                        bool found = false;
-                        DataSet ds_pharmacist = new DataSet();
-                        SqlDataAdapter da_pharmacist = new SqlDataAdapter("SELECT * FROM pharmacist", connection);
-                        da_pharmacist.Fill(ds_pharmacist, "pharmacist");
-                        DataRow[] arr_p = ds_pharmacist.Tables["pharmacist"].Select("IdNumber =" + str_p);
+                        str = "";
+                        str = reader.ReadLine();
+
+                        DataSet ds_Android = new DataSet();
+                        SqlDataAdapter da_android = new SqlDataAdapter("select IdClient,IdMed,AmountMorning, AmountNoon,AmountNight,StartTaking,NumOfDays,LastCheckDate,NumOfDaysLeft FROM Prescription", connection);
+                        da_android.Fill(ds_Android, "Prescription");
+                        DataRow[] arr_p = ds_Android.Tables["Prescription"].Select("IdClient =" + str);
+                        string currentTime = DateTime.Now.ToShortDateString();
 
                         foreach (DataRow dr in arr_p)
                         {
-                            found = true;
-                            str_PN += dr["FirstName"];
+
+                            if ((int)dr["NumOfDays"] > 0 && DateTime.Parse(dr["LastCheckDate"].ToString()) == DateTime.Parse(currentTime))
+                            {                        
+                                writer.WriteLine(dr["IdMed"].ToString());
+                                writer.Flush();
+                                writer.WriteLine(dr["AmountMorning"].ToString());
+                                writer.Flush();
+                                writer.WriteLine(dr["AmountNoon"].ToString());
+                                writer.Flush();
+                                writer.WriteLine(dr["AmountNight"].ToString());
+                                writer.Flush();
+                                writer.WriteLine(dr["NumOfDaysLeft"].ToString());
+                                writer.Flush();
+                            }
+
+                            else if ((int)dr["NumOfDays"] > 0 && DateTime.Parse(dr["LastCheckDate"].ToString()) != DateTime.Parse(currentTime))
+                            {
+
+                                writer.WriteLine(dr["IdMed"].ToString());                              
+                                writer.Flush();
+                                str = reader.ReadLine();                            
+                                writer.WriteLine(dr["AmountMorning"].ToString());
+                                writer.Flush();
+                                writer.WriteLine(dr["AmountNoon"].ToString());
+                                writer.Flush();
+                                writer.WriteLine(dr["AmountNight"].ToString());
+                                writer.Flush();
+                                int num = (int)dr["NumOfDaysLeft"] - 1;
+                                writer.WriteLine(num.ToString());
+                                writer.Flush();
+
+                                int id = (int)dr["Id"];
+                                int NumOfDays = (int)dr["NumOfDaysLetf"] - 1;
+                                string str_sql = "Update Prescription set NumOfDaysLeft = @NOD where Id = @id";
+                                connection.Open();
+                                da_android.UpdateCommand = connection.CreateCommand();
+                                da_android.UpdateCommand.CommandText = str_sql;
+                                da_android.UpdateCommand.Parameters.AddWithValue("@NOD", NumOfDays);
+                                da_android.UpdateCommand.Parameters.AddWithValue("@id", id);
+                                da_android.UpdateCommand.ExecuteNonQuery();
+                                connection.Close();
+
+                                string str_sql2 = "Update Prescription set LestCheckDate = @LCD where Id = @id";
+                                connection.Open();
+                                da_android.UpdateCommand = connection.CreateCommand();
+                                da_android.UpdateCommand.CommandText = str_sql2;
+                                da_android.UpdateCommand.Parameters.AddWithValue("@LCD", currentTime);
+                                da_android.UpdateCommand.Parameters.AddWithValue("@id", id);
+                                da_android.UpdateCommand.ExecuteNonQuery();
+                                connection.Close();
+
+
+                            }
+
                         }
-                        if (!found)
-                        {
-                            str_PN = "";
-                            writer.Write(str_PN);
-                        }
-                        else
-                        {
-                            writer.Write(str_PN);
-                        }
+                        writer.WriteLine("done");
+                        writer.Flush();
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.ToString());
-                    }
-                }
-                else if (str == "MedCombo")
-                {
-
-                    DataSet ds_medCombo = new DataSet();
-                    SqlDataAdapter da_medCombo = new SqlDataAdapter("SELECT BrandName FROM medicine", connection);
-                    da_medCombo.Fill(ds_medCombo, "medicine");
-                    DataRow[] arr_p = ds_medCombo.Tables["medicine"].Select();
-
-                    var medList = ds_medCombo.Tables["medicine"]
-                        .AsEnumerable()
-                        .Select(medicine => new
-                        {
-                            BrnadName = medicine.Field<string>("BrandName")
-                        });
-
-                    string med_str = "";
-
-                    foreach (var med in medList)
-                    {
-                        med_str += med.BrnadName.Trim() + ",";
-                    }
-
-                    writer.Write(med_str);
-                }
-
-                else if (str == "androidClient")
-                {
-                    str = reader.ReadString();
-                    DataSet ds_Android = new DataSet();
-                    SqlDataAdapter da_android = new SqlDataAdapter("select IdClient,IdMed,AmountMorning, AmountNoon,AmountNight,StartTaking,NumOfDays FROM Prescription,SentToClient", connection);
-                    da_android.Fill(ds_Android, "Prescription");
-                    DataRow[] arr_p = ds_Android.Tables["Prescription"].Select("IdClient =" + str);
-                    string str2 = DateTime.Now.ToShortTimeString();
-                    foreach (DataRow dr in arr_p)
-                    {
-                        if (dr["StartTaking"].Equals(str2))
-                        {
-                            JasonToAndroid JTA = new JasonToAndroid();
-                            JTA.name = dr["IdMed"].ToString();
-                            JTA.amount_morning = (int)dr["AmountMorning"];
-                            JTA.amount_noon = (int)dr["AmountNoon"];
-                            JTA.amount_night = (int)dr["AmountNight"];
-                            JTA.num_of_days = (int)dr["NumOfDays"];
-                            string android_json = JsonConvert.SerializeObject(JTA);
-
-                            writer.Write(android_json);
-                        }
-                        else if ((int)dr["NumOfDays"] > 0)
-                        {
-                            JasonToAndroid JTA = new JasonToAndroid();
-                            JTA.name = dr["IdMed"].ToString();
-                            JTA.amount_morning = (int)dr["AmountMorning"];
-                            JTA.amount_noon = (int)dr["AmountNoon"];
-                            JTA.amount_night = (int)dr["AmountNight"];
-                            JTA.num_of_days = (int)dr["NumOfDays"] - 1;
-                            string android_json = JsonConvert.SerializeObject(JTA);
-
-                            writer.Write(android_json);
-                            dr["NumOfDays"] = (int)dr["NumOfDays"] - 1;
-                            da_android.Update(ds_Android);
-                        }
-                    }
-
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
+            }
         }
+
 
 
         private void cancelListen_Click(object sender, EventArgs e)//close server
@@ -295,7 +409,7 @@ namespace project
         private void setUpDataAdapter()//open connection to db and pull out prescription table
         {
 
-            dataAdapter_Prescription = new SqlDataAdapter("select IdMed, IdClient, StartTaking, NumOfDays, AmountMorning, AmountNoon, AmountNight, IdPharmacist From Prescription", connection);
+            dataAdapter_Prescription = new SqlDataAdapter("select IdMed, IdClient, StartTaking, NumOfDays, AmountMorning, AmountNoon, AmountNight, IdPharmacist, LastCheckDate, NumOfDaysLeft From Prescription", connection);
             SqlCommandBuilder builder_Prescription = new SqlCommandBuilder(dataAdapter_Prescription);
 
 
@@ -347,7 +461,9 @@ namespace project
                 dr_Prescription["IdMed"] = medSchd.MedId;
                 dr_Prescription["IdClient"] = medSchd.ClientId;
                 dr_Prescription["StartTaking"] = medSchd.StartTime.ToShortDateString();
+                dr_Prescription["LastCheckDate"] = medSchd.StartTime.ToShortDateString();
                 dr_Prescription["NumOfDays"] = medSchd.DaysLong;
+                dr_Prescription["NumOfDaysLeft"] = medSchd.DaysLong;
                 dr_Prescription["AmountMorning"] = medSchd.AmountMorning;
                 dr_Prescription["AmountNoon"] = medSchd.AmountNoon;
                 dr_Prescription["AmountNight"] = medSchd.AmountNight;
